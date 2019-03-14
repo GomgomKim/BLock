@@ -1,161 +1,202 @@
 package com.example.block.main;
 
+import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.block.R;
-import com.example.block.adapter.LeftCover;
-import com.example.block.adapter.ViewPagerAdapter;
 
-import butterknife.ButterKnife;
+import java.util.ArrayList;
+import java.util.Random;
 
-public class MainActivity extends AppCompatActivity {
-    ViewPagerAdapter viewPagerAdapter;
-    SetViewPagerTabListener setViewPagerTabListener;
+import devlight.io.library.ntb.NavigationTabBar;
 
-    private boolean fragment_state = false;
+/**
+ * Created by GIGAMOLE on 28.03.2016.
+ */
+public class MainActivity extends Activity {
 
-    private LeftCover leftCover;
-    private ActionBarDrawerToggle dtToggle;
-
-    //tool bar
-    Toolbar toolbar;
-    DrawerLayout dlDrawer;
-
-    ViewPager mainPager;
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
-
-        initsetting();
-        setToolbar();
+        initUI();
     }
 
-    public interface SetViewPagerTabListener{
-        void setTab(int position);
-    }
-
-    public void initsetting() {
-        mainPager=(ViewPager)findViewById(R.id.mainPager);
-        mainPager.setOffscreenPageLimit(5);
-        setViewPagerTabListener= position -> {
-            switch (position){
-                case 0:
-                    mainPager.setCurrentItem(0);
-                    break;
-                case 1:
-                    mainPager.setCurrentItem(1);
-                    break;
-                case 2:
-                    mainPager.setCurrentItem(2);
-                    break;
-                case 3:
-                    mainPager.setCurrentItem(3);
-                    break;
-                case 4:
-                    mainPager.setCurrentItem(4);
-                    break;
+    private void initUI() {
+        final ViewPager viewPager = (ViewPager) findViewById(R.id.vp_horizontal_ntb);
+        viewPager.setAdapter(new PagerAdapter() {
+            @Override
+            public int getCount() {
+                return 5;
             }
-        };
 
-        viewPagerAdapter=new ViewPagerAdapter(getSupportFragmentManager(), setViewPagerTabListener);
-        mainPager.setAdapter(viewPagerAdapter);
+            @Override
+            public boolean isViewFromObject(final View view, final Object object) {
+                return view.equals(object);
+            }
+
+            @Override
+            public void destroyItem(final View container, final int position, final Object object) {
+                ((ViewPager) container).removeView((View) object);
+            }
+
+            @Override
+            public Object instantiateItem(final ViewGroup container, final int position) {
+                final View view = LayoutInflater.from(
+                        getBaseContext()).inflate(R.layout.item_vp_list, null, false);
+
+                final RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.rv);
+                recyclerView.setHasFixedSize(true);
+                recyclerView.setLayoutManager(new LinearLayoutManager(
+                                getBaseContext(), LinearLayoutManager.VERTICAL, false
+                        )
+                );
+                recyclerView.setAdapter(new RecycleAdapter());
+
+                container.addView(view);
+                return view;
+            }
+        });
+
+        final String[] colors = getResources().getStringArray(R.array.default_preview);
+
+        final NavigationTabBar navigationTabBar = (NavigationTabBar) findViewById(R.id.ntb_horizontal);
+        final ArrayList<NavigationTabBar.Model> models = new ArrayList<>();
+        models.add(
+                new NavigationTabBar.Model.Builder(
+                        getResources().getDrawable(R.drawable.ic_first),
+                        Color.parseColor(colors[0]))
+                        .title("Heart")
+                        .build()
+        );
+        models.add(
+                new NavigationTabBar.Model.Builder(
+                        getResources().getDrawable(R.drawable.ic_second),
+                        Color.parseColor(colors[1]))
+                        .title("Cup")
+                        .build()
+        );
+        models.add(
+                new NavigationTabBar.Model.Builder(
+                        getResources().getDrawable(R.drawable.ic_third),
+                        Color.parseColor(colors[2]))
+                        .title("Diploma")
+                        .build()
+        );
+        models.add(
+                new NavigationTabBar.Model.Builder(
+                        getResources().getDrawable(R.drawable.ic_fourth),
+                        Color.parseColor(colors[3]))
+                        .title("Flag")
+                        .build()
+        );
+        models.add(
+                new NavigationTabBar.Model.Builder(
+                        getResources().getDrawable(R.drawable.ic_fifth),
+                        Color.parseColor(colors[4]))
+                        .title("Medal")
+                        .build()
+        );
+
+        navigationTabBar.setModels(models);
+        navigationTabBar.setViewPager(viewPager, 2);
+
+        //IMPORTANT: ENABLE SCROLL BEHAVIOUR IN COORDINATOR LAYOUT
+        navigationTabBar.setBehaviorEnabled(true);
+
+        navigationTabBar.setOnTabBarSelectedIndexListener(new NavigationTabBar.OnTabBarSelectedIndexListener() {
+            @Override
+            public void onStartTabSelected(final NavigationTabBar.Model model, final int index) {
+            }
+
+            @Override
+            public void onEndTabSelected(final NavigationTabBar.Model model, final int index) {
+                model.hideBadge();
+            }
+        });
+        navigationTabBar.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(final int position, final float positionOffset, final int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(final int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(final int state) {
+
+            }
+        });
+
+        final CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.parent);
+        findViewById(R.id.fab).setOnClickListener(v -> {
+            for (int i = 0; i < navigationTabBar.getModels().size(); i++) {
+                final NavigationTabBar.Model model = navigationTabBar.getModels().get(i);
+                navigationTabBar.postDelayed(() -> {
+                    final String title = String.valueOf(new Random().nextInt(15));
+                    if (!model.isBadgeShowed()) {
+                        model.setBadgeTitle(title);
+                        model.showBadge();
+                    } else model.updateBadgeTitle(title);
+                }, i * 100);
+            }
+
+            coordinatorLayout.postDelayed(() -> {
+                final Snackbar snackbar = Snackbar.make(navigationTabBar, "Coordinator NTB", Snackbar.LENGTH_SHORT);
+                snackbar.getView().setBackgroundColor(Color.parseColor("#9b92b3"));
+                ((TextView) snackbar.getView().findViewById(R.id.snackbar_text))
+                        .setTextColor(Color.parseColor("#423752"));
+                snackbar.show();
+            }, 1000);
+        });
+
+        final CollapsingToolbarLayout collapsingToolbarLayout =
+                (CollapsingToolbarLayout) findViewById(R.id.toolbar);
+        collapsingToolbarLayout.setExpandedTitleColor(Color.parseColor("#009F90AF"));
+        collapsingToolbarLayout.setCollapsedTitleTextColor(Color.parseColor("#9f90af"));
     }
 
-    public void setToolbar() {
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+    public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.ViewHolder> {
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        @Override
+        public ViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
+            final View view = LayoutInflater.from(getBaseContext()).inflate(R.layout.item_list, parent, false);
+            return new ViewHolder(view);
+        }
 
-        dlDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        @Override
+        public void onBindViewHolder(final ViewHolder holder, final int position) {
+            holder.txt.setText(String.format("Navigation Item #%d", position));
+        }
 
-        dtToggle = new ActionBarDrawerToggle(this, dlDrawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        dlDrawer.addDrawerListener(dtToggle);
-        dtToggle.syncState();
+        @Override
+        public int getItemCount() {
+            return 20;
+        }
 
-        leftCover = (LeftCover) getSupportFragmentManager().findFragmentById(R.id.drawer);
+        public class ViewHolder extends RecyclerView.ViewHolder {
 
-        ImageButton buttonCloseDrawer = (ImageButton) findViewById(R.id.btn_close);
-        buttonCloseDrawer.setOnClickListener(arg0 -> dlDrawer.closeDrawers());
+            public TextView txt;
 
-        toolbar.bringToFront();
-
-        LinearLayout nav_cover = (LinearLayout) findViewById(R.id.nav_cover);
-        nav_cover.setOnClickListener(view -> {
-            setViewPagerTabListener.setTab(0);
-            toolbar.bringToFront();
-            dlDrawer.closeDrawers();
-        });
-
-        LinearLayout nav_play_list = (LinearLayout) findViewById(R.id.nav_play_list);
-        nav_play_list.setOnClickListener(view -> {
-            setViewPagerTabListener.setTab(1);
-            toolbar.bringToFront();
-            dlDrawer.closeDrawers();
-        });
-
-        LinearLayout nav_booklet = (LinearLayout) findViewById(R.id.nav_booklet);
-        nav_booklet.setOnClickListener(view -> {
-            setViewPagerTabListener.setTab(2);
-            toolbar.bringToFront();
-            dlDrawer.closeDrawers();
-        });
-
-        LinearLayout nav_video = (LinearLayout) findViewById(R.id.nav_video);
-        nav_video.setOnClickListener(view -> {
-            setViewPagerTabListener.setTab(3);
-            toolbar.bringToFront();
-            dlDrawer.closeDrawers();
-        });
-
-        LinearLayout nav_thanks_to = (LinearLayout) findViewById(R.id.nav_thanks_to);
-        nav_thanks_to.setOnClickListener(view -> {
-            setViewPagerTabListener.setTab(4);
-            toolbar.bringToFront();
-            dlDrawer.closeDrawers();
-        });
-
-        /*ImageButton nav_schedule = (ImageButton) findViewById(R.id.nav_schedule);
-        nav_schedule.setOnClickListener(view -> {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragment_container, new ScheduleFragment())
-                    .commit();
-            toolbar.bringToFront();
-            dlDrawer.closeDrawers();
-            fragment_state = true;
-        });
-
-        ImageButton nav_sns = (ImageButton) findViewById(R.id.nav_sns);
-        nav_sns.setOnClickListener(view -> {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragment_container, new SnsFragment())
-                    .commit();
-            toolbar.bringToFront();
-            dlDrawer.closeDrawers();
-            fragment_state = true;
-        });
-
-        ImageButton nav_review = (ImageButton) findViewById(R.id.nav_review);
-        nav_review.setOnClickListener(view -> {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragment_container, new ReviewFragment())
-                    .commit();
-            toolbar.bringToFront();
-            dlDrawer.closeDrawers();
-            fragment_state = true;
-        });*/
+            public ViewHolder(final View itemView) {
+                super(itemView);
+                txt = (TextView) itemView.findViewById(R.id.txt_vp_item_list);
+            }
+        }
     }
 }
