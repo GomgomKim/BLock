@@ -1,32 +1,27 @@
 package com.example.block.main;
 
-import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
 import com.ToxicBakery.viewpager.transforms.CubeOutTransformer;
 import com.example.block.R;
+import com.example.block.adapter.ViewPagerAdapter;
 
 import java.util.ArrayList;
 import java.util.Random;
 
 import devlight.io.library.ntb.NavigationTabBar;
 
-/**
- * Created by GIGAMOLE on 28.03.2016.
- */
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity {
+
+    ViewPager viewPager;
+    ViewPagerAdapter viewPagerAdapter;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -36,45 +31,12 @@ public class MainActivity extends Activity {
     }
 
     private void initUI() {
-        final ViewPager viewPager = (ViewPager) findViewById(R.id.vp_horizontal_ntb);
-        viewPager.setAdapter(new PagerAdapter() {
-            @Override
-            public int getCount() {
-                return 5;
-            }
-
-            @Override
-            public boolean isViewFromObject(final View view, final Object object) {
-                return view.equals(object);
-            }
-
-            @Override
-            public void destroyItem(final View container, final int position, final Object object) {
-                ((ViewPager) container).removeView((View) object);
-            }
-
-            @Override
-            public Object instantiateItem(final ViewGroup container, final int position) {
-                final View view = LayoutInflater.from(
-                        getBaseContext()).inflate(R.layout.item_vp_list, null, false);
-
-                final RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.rv);
-                recyclerView.setHasFixedSize(true);
-                recyclerView.setLayoutManager(new LinearLayoutManager(
-                                getBaseContext(), LinearLayoutManager.VERTICAL, false
-                        )
-                );
-                recyclerView.setAdapter(new RecycleAdapter());
-
-                container.addView(view);
-                return view;
-            }
-        });
-
+        viewPager = (ViewPager) findViewById(R.id.vp_horizontal_ntb);
+        viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(viewPagerAdapter);
         viewPager.setPageTransformer(true, new CubeOutTransformer());
 
         final String[] colors = getResources().getStringArray(R.array.default_preview);
-
         final NavigationTabBar navigationTabBar = (NavigationTabBar) findViewById(R.id.ntb_horizontal);
         final ArrayList<NavigationTabBar.Model> models = new ArrayList<>();
         models.add(
@@ -172,34 +134,5 @@ public class MainActivity extends Activity {
                 (CollapsingToolbarLayout) findViewById(R.id.toolbar);
         collapsingToolbarLayout.setExpandedTitleColor(Color.parseColor("#009F90AF"));
         collapsingToolbarLayout.setCollapsedTitleTextColor(Color.parseColor("#9f90af"));
-    }
-
-    public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.ViewHolder> {
-
-        @Override
-        public ViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
-            final View view = LayoutInflater.from(getBaseContext()).inflate(R.layout.item_list, parent, false);
-            return new ViewHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(final ViewHolder holder, final int position) {
-            holder.txt.setText(String.format("Navigation Item #%d", position));
-        }
-
-        @Override
-        public int getItemCount() {
-            return 20;
-        }
-
-        public class ViewHolder extends RecyclerView.ViewHolder {
-
-            public TextView txt;
-
-            public ViewHolder(final View itemView) {
-                super(itemView);
-                txt = (TextView) itemView.findViewById(R.id.txt_vp_item_list);
-            }
-        }
     }
 }
