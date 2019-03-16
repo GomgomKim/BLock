@@ -44,5 +44,12 @@ dependencies {
     implementation 'devlight.io:navigationtabbar:1.2.5'
     //custuming pager
     implementation 'com.ToxicBakery.viewpager.transforms:view-pager-transforms:2.0.24'
+    // firebase
+    implementation 'com.google.firebase:firebase-core:16.0.1'
+    implementation 'com.google.firebase:firebase-analytics:15.0.0'
+    implementation 'com.google.firebase:firebase-database:16.0.1'
+
 
 }
+
+apply plugin: 'com.google.gms.google-services'

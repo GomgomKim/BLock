@@ -30,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
         initUI();
     }
 
+
+
     private void initUI() {
         viewPager = (ViewPager) findViewById(R.id.vp_horizontal_ntb);
         viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
