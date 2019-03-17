@@ -4,14 +4,158 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".tab.HomeFragment">
+    tools:context=".tab.HomeFragment"
+    >
 
-    <TextView
-        android:id="@+id/home_block"
-        android:layout_centerInParent="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="30dp"
+    <ImageView
+        android:id="@+id/home_back"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@drawable/home_back"
         />
+
+    <!---->
+    <!---->
+    <!--is not home-->
+    <RelativeLayout
+        android:id="@+id/none_block_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+        <ImageView
+            android:id="@+id/none_block_img"
+            android:layout_width="330dp"
+            android:layout_height="360dp"
+            android:adjustViewBounds="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            />
+        <RelativeLayout
+            android:id="@+id/none_block_bottom"
+            android:layout_below="@+id/none_block_img"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:layout_width="300dp"
+            android:layout_height="130dp"
+            >
+            <ImageView
+                android:id="@+id/bottom_img"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <ImageButton
+                android:id="@+id/none_block_btn"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:adjustViewBounds="true"
+                android:layout_marginRight="50dp"
+                android:background="@drawable/arrow"
+                />
+        </RelativeLayout>
+    </RelativeLayout>
+
+
+    <!---->
+    <!---->
+    <!---->
+    <!--is home -->
+        <RelativeLayout
+            android:id="@+id/on_block_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            >
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="40dp"
+                android:paddingRight="40dp"
+                android:layout_marginTop="60dp"
+                >
+                <TextView
+                    android:id="@+id/door_id_title"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="160dp"
+                    android:layout_height="wrap_content"
+                    android:text="door_id"
+                    android:textColor="#ffffff"
+                    android:textSize="30dp"
+                    android:fontFamily="@font/bodoniflf_bold"
+                    />
+
+                <TextView
+                    android:id="@+id/door_id"
+                    android:layout_alignParentTop="true"
+                    android:layout_toRightOf="@+id/door_id_title"
+                    android:layout_marginLeft="25dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="door_id"
+                    android:textColor="#ffffff"
+                    android:textSize="30dp"
+                    android:fontFamily="@font/bodoniflf_bold"
+                    />
+
+                <TextView
+                    android:id="@+id/my_state_title"
+                    android:layout_below="@+id/door_id_title"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginTop="20dp"
+                    android:layout_width="160dp"
+                    android:layout_height="wrap_content"
+                    android:text="my state"
+                    android:textColor="#ffffff"
+                    android:textSize="30dp"
+                    android:fontFamily="@font/bodoniflf_bold"
+                    />
+
+                <TextView
+                    android:id="@+id/my_state"
+                    android:layout_below="@+id/door_id"
+                    android:layout_toRightOf="@+id/my_state_title"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="home"
+                    android:textColor="#ffffff"
+                    android:textSize="30dp"
+                    android:fontFamily="@font/bodoniflf_bold"
+                    />
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/btn_layout"
+                android:layout_centerInParent="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <ImageButton
+                    android:id="@+id/open_btn"
+                    android:layout_alignParentTop="true"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:background="@drawable/unlocking"
+                    android:scaleType="fitXY"
+                    />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/open_text"
+                android:layout_below="@+id/btn_layout"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="25dp"
+                android:layout_marginTop="60dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Open Door"
+                android:textColor="#ffffff"
+                android:textSize="35dp"
+                android:fontFamily="@font/bodoniflf_bold"
+                />
+
+        </RelativeLayout>
 
 </RelativeLayout>

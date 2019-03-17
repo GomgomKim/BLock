@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.example.block.R;
 
 public class SplashActivity extends Activity {
@@ -17,12 +19,16 @@ public class SplashActivity extends Activity {
     }
 
     public void startLoading() {
+        ImageView imageView = (ImageView)findViewById(R.id.back);
+        Glide.with(this).load(R.raw.splashgif).into(imageView);
+        imageView.bringToFront();
+
         Handler handler = new Handler();
         handler.postDelayed(() -> {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             finish();
-        }, 2000);
+        }, 1330);
 
     }
 }
