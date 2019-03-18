@@ -20,7 +20,7 @@ public class SplashActivity extends Activity {
 
     public void startLoading() {
         ImageView imageView = (ImageView)findViewById(R.id.back);
-        Glide.with(this).load(R.raw.splashgif).into(imageView);
+        Glide.with(this).load(R.raw.splash).into(imageView);
         imageView.bringToFront();
 
         Handler handler = new Handler();
@@ -28,7 +28,7 @@ public class SplashActivity extends Activity {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             finish();
-        }, 1330);
+        }, 3000);
 
     }
 }

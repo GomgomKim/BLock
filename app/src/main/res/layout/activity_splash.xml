@@ -5,9 +5,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".main.SplashActivity">
+    tools:context=".main.SplashActivity"
+    android:background="#000000"
+    >
     <ImageView
         android:id="@+id/back"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_centerInParent="true"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        android:scaleType="fitXY"
+        />
 </RelativeLayout>

@@ -10,12 +10,13 @@ import android.view.ViewGroup;
 import com.ToxicBakery.viewpager.transforms.CubeOutTransformer;
 import com.example.block.R;
 import com.example.block.adapter.ViewPagerAdapter;
+import com.example.block.interfaces.MainInterface;
 
 import java.util.ArrayList;
 
 import devlight.io.library.ntb.NavigationTabBar;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MainInterface {
 
     ViewPager viewPager;
     ViewPagerAdapter viewPagerAdapter;
@@ -43,21 +44,21 @@ public class MainActivity extends AppCompatActivity {
         models.add(
                 new NavigationTabBar.Model.Builder(
                         getResources().getDrawable(R.drawable.home),
-                        Color.parseColor(colors[4]))
+                        Color.parseColor("#6ab9c5"))
                         .title("Home")
                         .build()
         );
         models.add(
                 new NavigationTabBar.Model.Builder(
                         getResources().getDrawable(R.drawable.locking),
-                        Color.parseColor(colors[1]))
-                        .title("MyBLOCK")
+                        Color.parseColor("#e7b452"))
+                        .title("MyDoor")
                         .build()
         );
         models.add(
                 new NavigationTabBar.Model.Builder(
                         getResources().getDrawable(R.drawable.ic_third),
-                        Color.parseColor(colors[2]))
+                        Color.parseColor("#e67988"))
                         .title("Request")
                         .build()
         );
@@ -95,5 +96,10 @@ public class MainActivity extends AppCompatActivity {
                 model.hideBadge();
             }
         });
+    }
+
+    @Override
+    public void setViewpager(int index) {
+        navigationTabBar.setViewPager(viewPager, index);
     }
 }

@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".tab.HomeFragment"
+    android:background="#000000"
     >
 
     <ImageView
@@ -12,7 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="fitXY"
-        android:src="@drawable/home_back"
+
+
         />
 
     <!---->
@@ -25,36 +27,26 @@
         >
         <ImageView
             android:id="@+id/none_block_img"
-            android:layout_width="330dp"
-            android:layout_height="360dp"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
             android:adjustViewBounds="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="100dp"
             />
-        <RelativeLayout
+        <TextView
             android:id="@+id/none_block_bottom"
             android:layout_below="@+id/none_block_img"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"
-            android:layout_width="300dp"
-            android:layout_height="130dp"
+            android:layout_marginTop="50dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Select Home Door"
+            android:textColor="#ffffff"
+            android:fontFamily="@font/bodoniflf_bold"
+            android:textSize="35dp"
             >
-            <ImageView
-                android:id="@+id/bottom_img"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
 
-            <ImageButton
-                android:id="@+id/none_block_btn"
-                android:layout_centerVertical="true"
-                android:layout_alignParentRight="true"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:adjustViewBounds="true"
-                android:layout_marginRight="50dp"
-                android:background="@drawable/arrow"
-                />
-        </RelativeLayout>
+        </TextView>
     </RelativeLayout>
 
 

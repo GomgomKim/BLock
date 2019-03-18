@@ -27,7 +27,7 @@ public class SearchBlockFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        layout = (RelativeLayout) inflater.inflate(R.layout.fragment_block_history, container, false);
+        layout = (RelativeLayout) inflater.inflate(R.layout.fragment_search_block, container, false);
         ButterKnife.bind(this, layout);
         dbSetting();
         return layout;

@@ -4,12 +4,53 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".tab.MyBlockFragment">
+    tools:context=".tab.MyBlockFragment"
+    android:background="#000000"
+    android:paddingRight="30dp"
+    android:paddingLeft="30dp"
+    >
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
+        android:id="@+id/title_text"
+        android:layout_below="@+id/none_block_img"
+        android:layout_marginTop="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Door List"
+        android:textColor="#e7b452"
+        android:fontFamily="@font/bodoniflf_bold"
+        android:textSize="25dp"
+        >
+    </TextView>
+
+    <View
+        android:id="@+id/span_line"
+        android:layout_below="@+id/title_text"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:background="#e7b452"
+        >
+    </View>
+
+    <ScrollView
+        android:layout_below="@+id/span_line"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_marginBottom="50dp"
+        >
+        <GridLayout
+            android:id="@+id/door_grid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="2"
+            android:orientation="horizontal"
+
+            ></GridLayout>
+    </ScrollView>
+
+
 
 </RelativeLayout>

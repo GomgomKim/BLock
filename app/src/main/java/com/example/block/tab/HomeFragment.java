@@ -37,9 +37,6 @@ public class HomeFragment extends Fragment {
     @BindView(R.id.none_block_layout) RelativeLayout none_block_layout;
     @BindView(R.id.home_back) ImageView home_back;
     @BindView(R.id.none_block_img) ImageView none_block_img;
-    @BindView(R.id.none_block_bottom) RelativeLayout none_block_bottom;
-    @BindView(R.id.bottom_img) ImageView bottom_img;
-    @BindView(R.id.none_block_btn) ImageButton none_block_btn;
 
     // have home
     @BindView(R.id.on_block_layout) RelativeLayout on_block_layout;
@@ -62,18 +59,16 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         layout = (RelativeLayout) inflater.inflate(R.layout.fragment_home, container, false);
         ButterKnife.bind(this, layout);
-
-        getFirebaseDatabase();
         initSetting();
+        getFirebaseDatabase();
+
 
         return layout;
     }
 
-    public void initSetting(){
+    public void initSetting() {
         // do not have home
-        Glide.with(this).load(R.drawable.home_back).into(home_back);
-        Glide.with(this).load(R.raw.none_block).into(none_block_img);
-        Glide.with(this).load(R.drawable.home_bottom).into(bottom_img);
+        Glide.with(this).load(R.raw.home_motion).into(none_block_img);
     }
 
     public void getFirebaseDatabase(){
