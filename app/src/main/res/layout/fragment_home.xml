@@ -24,29 +24,44 @@
         android:id="@+id/none_block_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="visible"
         >
-        <ImageView
-            android:id="@+id/none_block_img"
-            android:layout_width="250dp"
-            android:layout_height="250dp"
-            android:adjustViewBounds="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="100dp"
-            />
         <TextView
-            android:id="@+id/none_block_bottom"
-            android:layout_below="@+id/none_block_img"
+            android:id="@+id/none_block_welcome"
+            android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="50dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Select Home Door"
-            android:textColor="#ffffff"
+            android:text="Welcome"
+            android:textColor="#6ab9c5"
             android:fontFamily="@font/bodoniflf_bold"
             android:textSize="35dp"
-            >
+            />
 
-        </TextView>
+        <ImageView
+            android:id="@+id/none_block_img"
+            android:layout_below="@+id/none_block_welcome"
+            android:layout_width="250dp"
+            android:layout_height="300dp"
+            android:adjustViewBounds="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp"
+            />
+
+        <TextView
+            android:id="@+id/none_block_text"
+            android:layout_below="@+id/none_block_img"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Select yout home door in MyDoor page"
+            android:textColor="#6ab9c5"
+            android:fontFamily="@font/bodoniflf_bold"
+            android:textSize="15dp"
+            />
+
     </RelativeLayout>
 
 
@@ -59,13 +74,38 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
             >
+            <TextView
+                android:id="@+id/title_text"
+                android:layout_marginTop="50dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Home Door"
+                android:textColor="#6ab9c5"
+                android:fontFamily="@font/bodoniflf_bold"
+                android:textSize="25dp"
+                >
+            </TextView>
+
+            <View
+                android:id="@+id/span_line"
+                android:layout_below="@+id/title_text"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="#6ab9c5"
+                >
+            </View>
+
+
             <RelativeLayout
+                android:layout_below="@+id/span_line"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="40dp"
-                android:paddingRight="40dp"
-                android:layout_marginTop="60dp"
                 >
                 <TextView
                     android:id="@+id/door_id_title"
@@ -74,8 +114,8 @@
                     android:layout_width="160dp"
                     android:layout_height="wrap_content"
                     android:text="door_id"
-                    android:textColor="#ffffff"
-                    android:textSize="30dp"
+                    android:textColor="#6ab9c5"
+                    android:textSize="25dp"
                     android:fontFamily="@font/bodoniflf_bold"
                     />
 
@@ -87,8 +127,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="door_id"
-                    android:textColor="#ffffff"
-                    android:textSize="30dp"
+                    android:textColor="#6ab9c5"
+                    android:textSize="25dp"
                     android:fontFamily="@font/bodoniflf_bold"
                     />
 
@@ -96,12 +136,12 @@
                     android:id="@+id/my_state_title"
                     android:layout_below="@+id/door_id_title"
                     android:layout_alignParentLeft="true"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="10dp"
                     android:layout_width="160dp"
                     android:layout_height="wrap_content"
                     android:text="my state"
-                    android:textColor="#ffffff"
-                    android:textSize="30dp"
+                    android:textColor="#6ab9c5"
+                    android:textSize="25dp"
                     android:fontFamily="@font/bodoniflf_bold"
                     />
 
@@ -110,12 +150,12 @@
                     android:layout_below="@+id/door_id"
                     android:layout_toRightOf="@+id/my_state_title"
                     android:layout_marginLeft="25dp"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="10dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="home"
-                    android:textColor="#ffffff"
-                    android:textSize="30dp"
+                    android:textColor="#6ab9c5"
+                    android:textSize="25dp"
                     android:fontFamily="@font/bodoniflf_bold"
                     />
             </RelativeLayout>
@@ -124,12 +164,11 @@
                 android:layout_centerInParent="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
-                <ImageButton
+                <ImageView
                     android:id="@+id/open_btn"
                     android:layout_alignParentTop="true"
                     android:layout_width="120dp"
                     android:layout_height="120dp"
-                    android:background="@drawable/unlocking"
                     android:scaleType="fitXY"
                     />
             </RelativeLayout>
@@ -143,7 +182,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Open Door"
-                android:textColor="#ffffff"
+                android:textColor="#6ab9c5"
                 android:textSize="35dp"
                 android:fontFamily="@font/bodoniflf_bold"
                 />

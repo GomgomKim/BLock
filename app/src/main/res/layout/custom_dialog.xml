@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/yellow_border"
+    android:padding="15dp"
+    >
+
+    <TextView
+        android:id="@+id/door_id"
+        android:layout_below="@+id/none_block_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Door id"
+        android:textColor="#e7b452"
+        android:fontFamily="@font/bodoniflf_bold"
+        android:textSize="25dp"
+        >
+    </TextView>
+
+    <RadioButton
+        android:id="@+id/select_home"
+        android:layout_below="@+id/door_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checked="false"
+        android:text=" Set Home Door"
+        android:textColor="#e7b452"
+        android:fontFamily="@font/bodoniflf_bold"
+        android:textSize="25dp"
+        android:layout_marginTop="10dp"
+        />
+
+    <Button
+        android:id="@+id/open_door"
+        android:layout_below="@+id/select_home"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Door Open"
+        android:textColor="#e7b452"
+        android:fontFamily="@font/bodoniflf_bold"
+        android:textSize="20dp"
+        android:padding="10dp"
+        android:background="#77000000"
+        android:layout_marginTop="10dp"
+        />
+
+    <Button
+        android:id="@+id/close"
+        android:layout_below="@+id/select_home"
+        android:layout_toRightOf="@+id/open_door"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Close"
+        android:textColor="#e7b452"
+        android:fontFamily="@font/bodoniflf_bold"
+        android:textSize="20dp"
+        android:padding="10dp"
+        android:background="#77000000"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="30dp"
+        />
+
+
+
+</RelativeLayout>

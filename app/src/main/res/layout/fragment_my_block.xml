@@ -47,7 +47,7 @@
             android:layout_height="wrap_content"
             android:columnCount="2"
             android:orientation="horizontal"
-
+            android:layout_gravity="fill"
             ></GridLayout>
     </ScrollView>
 

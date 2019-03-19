@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -42,7 +41,8 @@ public class HomeFragment extends Fragment {
     @BindView(R.id.on_block_layout) RelativeLayout on_block_layout;
     @BindView(R.id.door_id) TextView door_id;
     @BindView(R.id.my_state) TextView my_state;
-    @BindView(R.id.open_btn) ImageButton open_btn;
+    @BindView(R.id.btn_layout) RelativeLayout btn_layout;
+    @BindView(R.id.open_btn) ImageView open_btn;
 
     // database
     static ArrayList<MemberItem> user_info =  new ArrayList<MemberItem>();
@@ -68,7 +68,8 @@ public class HomeFragment extends Fragment {
 
     public void initSetting() {
         // do not have home
-        Glide.with(this).load(R.raw.home_motion).into(none_block_img);
+        Glide.with(this).load(R.raw.blockchain).into(none_block_img);
+        Glide.with(this).load(R.raw.home_motion).into(open_btn);
     }
 
     public void getFirebaseDatabase(){
@@ -108,7 +109,8 @@ public class HomeFragment extends Fragment {
             on_block_layout.setVisibility(View.VISIBLE);
             on_block_layout.bringToFront();
             door_id.setText(home_door_id);
-            open_btn.setOnClickListener(v -> {
+            btn_layout.bringToFront();
+            btn_layout.setOnClickListener(v -> {
                 Toast.makeText(getContext(), "Door open !", Toast.LENGTH_SHORT).show();
             });
         }

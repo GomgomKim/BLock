@@ -2,7 +2,7 @@
 <RelativeLayout
     android:id="@+id/card_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="150dp"
     android:layout_height="wrap_content"
     android:background="@drawable/yellow_border"
     android:padding="20dp"
@@ -21,7 +21,7 @@
     <TextView
         android:id="@+id/state_text"
         android:layout_below="@+id/door_id_text"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="State : "
@@ -33,13 +33,13 @@
     <TextView
         android:id="@+id/time_text"
         android:layout_below="@+id/state_text"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="2019.03.01 ~ 2019.03.31"
         android:textColor="#e7b452"
         android:fontFamily="@font/bodoniflf_bold"
-        android:textSize="15dp"
+        android:textSize="10dp"
         />
 
 

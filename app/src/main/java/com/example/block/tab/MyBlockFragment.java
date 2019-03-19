@@ -58,9 +58,9 @@ public class MyBlockFragment extends Fragment {
         door_grid.addView(doorList_sub);
     }
 
-    public void createLayout(String door_id, String time){ // guest
+    public void createLayout(String door_id, String start_time, String end_time){ // guest
         DoorList_sub doorList_sub = new DoorList_sub(getContext());
-        doorList_sub.setGuest(door_id, time);
+        doorList_sub.setGuest(door_id, start_time, end_time);
         door_grid.addView(doorList_sub);
     }
 
@@ -107,8 +107,7 @@ public class MyBlockFragment extends Fragment {
                     Log.d("gomKim", "door_id: " + info[2]);
                     Log.d("gomKim", "start_time: " + info[3]);
                     Log.d("gomKim", "end_time: " + info[4]);
-                    String time = info[3]+" ~ "+info[4];
-                    createLayout(info[2], time);
+                    createLayout(info[2], info[3], info[4]);
                 }
             }
 
