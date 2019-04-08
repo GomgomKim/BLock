@@ -3,6 +3,7 @@ package com.example.block.tab;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,13 +17,17 @@ import com.bumptech.glide.Glide;
 import com.example.block.R;
 import com.example.block.database.MemberPost;
 import com.example.block.items.MemberItem;
+import com.example.block.web3j.ContactPrivateChain;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.concurrent.ExecutionException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -112,7 +117,39 @@ public class HomeFragment extends Fragment {
             btn_layout.bringToFront();
             btn_layout.setOnClickListener(v -> {
                 Toast.makeText(getContext(), "Door open !", Toast.LENGTH_SHORT).show();
+                Log.i("gomgomKim", "btn contract");
+
+                try {
+                    new ContactPrivateChain(getContext());
+                    Log.i("gomgomKim", "start contract");
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                long mNow;
+                Date mDate;
+                SimpleDateFormat mFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                mNow = System.currentTimeMillis();
+                mDate = new Date(mNow);
+                mFormat.format(mDate);
+//                ((History)getActivity()).sethistory(String.valueOf(mFormat));
             });
         }
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if(isVisibleToUser){ // 유저가 화면을 보고있을 때
+            if(this.layout != null){
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.detach(this).attach(this).commit();
+            }
+            return;
+        }
+        else
+            Log.d("SetUserHint","Cover OFF");
     }
 }

@@ -5,13 +5,257 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".tab.SearchBlockFragment"
-
+    android:background="#000000"
+    android:paddingRight="30dp"
+    android:paddingLeft="30dp"
     >
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/title_text"
+        android:layout_below="@+id/none_block_img"
+        android:layout_marginTop="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Info"
+        android:textColor="#aec865"
+        android:fontFamily="@font/bodoniflf_bold"
+        android:textSize="25dp"
+        >
+    </TextView>
 
-    </ScrollView>
+    <View
+        android:id="@+id/span_line"
+        android:layout_below="@+id/title_text"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:background="#aec865"
+        >
+    </View>
+
+    <RelativeLayout
+        android:id="@+id/profile_layout"
+        android:layout_below="@+id/span_line"
+        android:layout_centerHorizontal="true"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+       >
+        <ImageView
+            android:id="@+id/profile_img_detail"
+            android:layout_centerInParent="true"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+        <RelativeLayout
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/circle_view"
+            >
+            <ImageView
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:layout_centerInParent="true"
+                android:background="@drawable/member_ic_photo"
+                />
+        </RelativeLayout>
+    </RelativeLayout>
+
+
+
+    <LinearLayout
+        android:layout_marginTop="15dp"
+        android:id="@+id/name"
+        android:orientation="horizontal"
+        android:layout_below="@+id/profile_layout"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:paddingRight="40dp"
+        android:paddingLeft="40dp"
+        >
+        <TextView
+            android:layout_width="75dp"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="ID"
+            android:fontFamily="@font/bodoniflf_bold"
+            android:textSize="15dp"
+            android:textColor="#aec865"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="01099296975"
+            android:fontFamily="@font/bodoniflf_bold"
+            android:textSize="17dp"
+            android:textColor="#aec865"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/nickname"
+        android:orientation="horizontal"
+        android:layout_below="@+id/name"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:paddingRight="40dp"
+        android:paddingLeft="40dp"
+        >
+        <TextView
+            android:layout_width="75dp"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="Name"
+            android:fontFamily="@font/bodoniflf_bold"
+            android:textSize="15dp"
+            android:textColor="#aec865"
+            />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                >
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="김기연"
+                    android:fontFamily="@font/bodoniflf_bold"
+                    android:textSize="17dp"
+                    android:textColor="#aec865"
+                    />
+                <View
+                    android:background="#aec865"
+                    android:layout_width="match_parent"
+                    android:layout_marginRight="20dp"
+                    android:layout_height="2dp"
+                    android:layout_marginTop="-5dp"
+                    >
+
+                </View>
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:background="@drawable/circle_view"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                >
+                <ImageButton
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:background="@drawable/member_ic_write"
+                    android:layout_centerInParent="true"
+                    />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/join_day"
+        android:layout_below="@+id/nickname"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:paddingRight="40dp"
+        android:paddingLeft="40dp"
+        >
+        <TextView
+            android:layout_width="75dp"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="Home ID"
+            android:fontFamily="@font/bodoniflf_bold"
+            android:textSize="15dp"
+            android:textColor="#aec865"
+            />
+        <TextView
+            android:id="@+id/home_door_id"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text=""
+            android:fontFamily="@font/bodoniflf_bold"
+            android:textSize="17dp"
+            android:textColor="#aec865"
+            />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/change_password_btn"
+        android:layout_below="@+id/join_day"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="#aec865"
+        android:layout_marginTop="12dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        >
+        <TextView
+            android:layout_width="157dp"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Change Password"
+            android:textColor="#ffffff"
+            android:fontFamily="@font/bodoniflf_bold"
+            android:textSize="17dp"
+            android:drawableRight="@drawable/ic_write_resize_member"
+            />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/logout_btn"
+        android:layout_below="@+id/change_password_btn"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="12dp"
+        android:background="#ffffff"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Log out"
+            android:textColor="#aec865"
+            android:includeFontPadding="false"
+            android:fontFamily="@font/bodoniflf_bold"
+            android:textSize="17dp"
+            />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/user_out"
+        android:layout_below="@+id/logout_btn"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/gray_border_trans"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Withdrawal"
+            android:textColor="#aec865"
+            android:includeFontPadding="false"
+            android:fontFamily="@font/notosanskr_regular"
+            android:textSize="17dp"
+            />
+    </RelativeLayout>
+
 
 </RelativeLayout>

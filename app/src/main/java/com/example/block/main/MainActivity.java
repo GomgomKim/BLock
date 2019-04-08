@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import com.ToxicBakery.viewpager.transforms.CubeOutTransformer;
 import com.example.block.R;
+import com.example.block.adapter.BackPressCloseHandler;
 import com.example.block.adapter.ViewPagerAdapter;
 import com.example.block.interfaces.MainInterface;
 
@@ -23,6 +24,8 @@ public class MainActivity extends AppCompatActivity implements MainInterface {
     NavigationTabBar navigationTabBar;
     ArrayList<NavigationTabBar.Model> models;
 
+    private BackPressCloseHandler backPressCloseHandler;
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,8 +33,16 @@ public class MainActivity extends AppCompatActivity implements MainInterface {
         initUI();
     }
 
+    @Override
+    public void onBackPressed() {
+//        super.onBackPressed();
+        backPressCloseHandler.onBackPressed();
+    }
+
 
     private void initUI() {
+        backPressCloseHandler = new BackPressCloseHandler(this);
+
         viewPager = (ViewPager) findViewById(R.id.vp_horizontal_ntb);
         viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(viewPagerAdapter);
@@ -59,14 +70,14 @@ public class MainActivity extends AppCompatActivity implements MainInterface {
                 new NavigationTabBar.Model.Builder(
                         getResources().getDrawable(R.drawable.ic_third),
                         Color.parseColor("#e67988"))
-                        .title("Request")
+                        .title("Contract")
                         .build()
         );
         models.add(
                 new NavigationTabBar.Model.Builder(
                         getResources().getDrawable(R.drawable.search),
-                        Color.parseColor(colors[3]))
-                        .title("Search")
+                        Color.parseColor("#aec865"))
+                        .title("Info")
                         .build()
         );
         models.add(

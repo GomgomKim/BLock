@@ -6,16 +6,21 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridLayout;
 import android.widget.RelativeLayout;
 
 import com.example.block.R;
+import com.example.block.adapter.HistoryList_sub;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class BlockHistoryFragment extends Fragment {
+
+    @BindView(R.id.door_grid) GridLayout door_grid;
 
     RelativeLayout layout = null;
 
@@ -29,11 +34,12 @@ public class BlockHistoryFragment extends Fragment {
                              Bundle savedInstanceState) {
         layout = (RelativeLayout) inflater.inflate(R.layout.fragment_block_history, container, false);
         ButterKnife.bind(this, layout);
-        dbSetting();
         return layout;
     }
 
-    public void dbSetting(){
-
+    public void createLayout(String time){ // host
+        HistoryList_sub historyList_sub = new HistoryList_sub(getContext());
+        historyList_sub.setHistory(time);
+        door_grid.addView(historyList_sub);
     }
 }

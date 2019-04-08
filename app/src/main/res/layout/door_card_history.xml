@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/card_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/red_border"
+    android:padding="20dp"
+    >
+
+    <TextView
+        android:id="@+id/history"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Door ID : "
+        android:textColor="#e67988"
+        android:fontFamily="@font/bodoniflf_bold"
+        android:textSize="15dp"
+        />
+</RelativeLayout>

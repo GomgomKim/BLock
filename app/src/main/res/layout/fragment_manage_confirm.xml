@@ -15,7 +15,7 @@
         android:layout_marginTop="50dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Request List"
+        android:text="Home Door List"
         android:textColor="#e67988"
         android:fontFamily="@font/bodoniflf_bold"
         android:textSize="25dp"
@@ -33,5 +33,21 @@
         android:background="#e67988"
         >
     </View>
+
+    <ScrollView
+        android:layout_below="@+id/span_line"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="50dp"
+        >
+        <GridLayout
+            android:id="@+id/door_grid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="2"
+            android:orientation="horizontal"
+            android:layout_gravity="fill"
+            ></GridLayout>
+    </ScrollView>
 
 </RelativeLayout>
