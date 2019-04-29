@@ -9,6 +9,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -51,6 +52,8 @@ dependencies {
 
     //blockchain
     implementation ('org.web3j:core:4.2.0-android')
+
+    implementation 'com.android.support:multidex:1.0.2'
 
 }
 

@@ -1,9 +1,13 @@
 package com.example.block.tab;
 
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,13 +21,16 @@ import com.bumptech.glide.Glide;
 import com.example.block.R;
 import com.example.block.database.MemberPost;
 import com.example.block.items.MemberItem;
-import com.example.block.web3j.ContactPrivateChain;
+import com.example.block.web3j.ContactBlockchain;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import org.web3j.protocol.exceptions.TransactionException;
+
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -119,14 +126,40 @@ public class HomeFragment extends Fragment {
                 Toast.makeText(getContext(), "Door open !", Toast.LENGTH_SHORT).show();
                 Log.i("gomgomKim", "btn contract");
 
+                if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE)) {
+
+                    } else {
+                        ActivityCompat.requestPermissions(getActivity(),
+                                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                                1);
+                    }
+                }
+
+                if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+
+                    } else {
+                        ActivityCompat.requestPermissions(getActivity(),
+                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                1);
+                    }
+                }
+
                 try {
-                    new ContactPrivateChain(getContext());
-                    Log.i("gomgomKim", "start contract");
+                    new ContactBlockchain(getContext());
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (TransactionException e) {
+                    e.printStackTrace();
                 }
+
+                Log.i("gomgomKim", "start contract");
+
 
                 long mNow;
                 Date mDate;

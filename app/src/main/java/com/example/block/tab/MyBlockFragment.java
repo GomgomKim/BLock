@@ -45,10 +45,15 @@ public class MyBlockFragment extends Fragment {
         initSetting();
         getFirebaseDatabaseHost();
         getFirebaseDatabaseGuest();
+        setDoorMove();
         return layout;
     }
 
     public void initSetting(){
+
+    }
+
+    public void setDoorMove(){
 
     }
 

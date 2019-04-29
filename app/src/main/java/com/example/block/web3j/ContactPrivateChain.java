@@ -3,12 +3,16 @@ package com.example.block.web3j;
 import android.content.Context;
 import android.util.Log;
 
+import org.web3j.crypto.CipherException;
+import org.web3j.crypto.Credentials;
+import org.web3j.crypto.WalletUtils;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.admin.Admin;
 import org.web3j.protocol.admin.methods.response.PersonalUnlockAccount;
 import org.web3j.protocol.core.methods.response.Web3ClientVersion;
 import org.web3j.protocol.http.HttpService;
 
+import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
 public class ContactPrivateChain {
@@ -22,6 +26,14 @@ public class ContactPrivateChain {
 
         Web3j web3j = Web3j.build(new HttpService(URL));
         Admin admin = Admin.build(new HttpService(URL));
+
+        try {
+            Credentials credentials = WalletUtils.loadCredentials("rlarl123", "ether\\data\\keystore/UTC--2019-03-21T09-04-34.957056900Z--2cad275fb41068a1cc0076a4cf9b69bd9c87070e");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (CipherException e) {
+            e.printStackTrace();
+        }
 
         Web3ClientVersion web3ClientVersion = web3j.web3ClientVersion().sendAsync().get();
         String clientVersion = web3ClientVersion.getWeb3ClientVersion();
