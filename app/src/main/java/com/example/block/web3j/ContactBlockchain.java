@@ -14,10 +14,14 @@ import org.web3j.crypto.Keys;
 import org.web3j.crypto.WalletUtils;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.admin.Admin;
+import org.web3j.protocol.core.DefaultBlockParameterName;
+import org.web3j.protocol.core.methods.response.EthGetBalance;
+import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.core.methods.response.Web3ClientVersion;
 import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.tx.gas.ContractGasProvider;
+import org.web3j.utils.Convert;
 import org.web3j.utils.Numeric;
 
 import java.io.File;
@@ -34,10 +38,10 @@ public class ContactBlockchain{
     Context context;
     String filename="";
     Credentials credentials;
-    BigInteger GAS_PRICE = BigInteger.valueOf(100);
+    BigInteger GAS_PRICE = BigInteger.valueOf(10000);
     BigInteger GAS_LIMIT = BigInteger.valueOf(3000000);
     BigInteger INITIALWEIVALUE = BigInteger.valueOf(0);
-    Utf8String DEPLOYSTRING = new Utf8String("gomgom");
+    Utf8String DEPLOYSTRING = new Utf8String("sol");
     Greeter greeter;
 
     public ContactBlockchain(Context context) throws ExecutionException, InterruptedException, IOException, TransactionException {
@@ -53,11 +57,13 @@ public class ContactBlockchain{
 
         createWallet("@qlqjs2019");
 
-       try {
-           credentials = WalletUtils.loadCredentials(PASSWORD, Environment.getExternalStorageDirectory().getPath() + "/LightWallet/"+WALLET);
+        try {
+            credentials = WalletUtils.loadCredentials(PASSWORD, Environment.getExternalStorageDirectory().getPath() + "/LightWallet/"+WALLET);
 //           Log.i("gomgomKim", "file path : "+Environment.getExternalStorageDirectory().getPath() + "/LightWallet/"+filename);
-           Log.i("gomgomKim", "Credentials loaded");
-           Log.i("gomgomKim", "credentials : "+credentials);
+
+//           credentials = Credentials.create(web3j.ethAccounts().send().getAccounts().get(0));
+            Log.i("gomgomKim", "Credentials loaded");
+            Log.i("gomgomKim", "credentials : "+credentials);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (CipherException e) {
@@ -98,15 +104,34 @@ public class ContactBlockchain{
                 Log.i("gomgomKim", "deploy error");
             }*/
 
-            /*TransactionReceipt transactionReceipt = null;
             try {
-                transactionReceipt = greeter.set(DEPLOYSTRING);
+
+                ////////
+                TransactionReceipt transactionReceipt = greeter.set(DEPLOYSTRING);
+                ////////
+
                 Log.i("gomgomKim", "set : "+transactionReceipt);
             } catch (IOException e) {
                 e.printStackTrace();
+                Log.i("gomgomKim", "io 오류");
             } catch (TransactionException e) {
                 e.printStackTrace();
-            }*/
+                Log.i("gomgomKim", "트랜젝션 오류");
+            }
+
+            // 잔액확인
+            EthGetBalance ethGetBalance = null;
+            try {
+                ethGetBalance = web3j.ethGetBalance("0x8c2ae0866c19bd02e2f4ba20050f9600d9dd3dfd", DefaultBlockParameterName.LATEST).sendAsync().get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+            BigInteger wei = ethGetBalance.getBalance();
+            String result2 = Convert.fromWei(wei.toString() , Convert.Unit.ETHER).toString();
+
+            Log.i("gomgomKim", "얼마있나요? : "+result2);
 
 //            new Uint256(BigInteger.valueOf(123));
             try {
