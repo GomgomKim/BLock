@@ -25,7 +25,6 @@ public class BlockHistoryFragment extends Fragment {
     RelativeLayout layout = null;
 
     public BlockHistoryFragment() {
-
     }
 
 

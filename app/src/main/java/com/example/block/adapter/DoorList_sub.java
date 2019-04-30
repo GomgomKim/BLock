@@ -135,7 +135,7 @@ public class DoorList_sub extends LinearLayout {
         Map<String, Object> childUpdates = new HashMap<>();
         Map<String, Object> postValues = null;
         if(add){
-            MemberPost post = new MemberPost("김기연", door_id);
+            MemberPost post = new MemberPost("김기연", door_id, "token");
             postValues = post.toMap();
         }
         childUpdates.put("/member/" + "01099296975", postValues);
