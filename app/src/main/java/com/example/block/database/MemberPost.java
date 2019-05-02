@@ -10,14 +10,19 @@ import java.util.Map;
 public class MemberPost {
     public String user_name;
     public String home_door_id;
+    public String token;
+    public String user_id;
+
 
     public MemberPost(){
 
     }
 
-    public MemberPost(String user_name, String home_door_id) {
+    public MemberPost(String user_name, String home_door_id, String token, String user_id) {
         this.user_name = user_name;
         this.home_door_id = home_door_id;
+        this.token = token;
+        this.user_id = user_id;
     }
 
     @Exclude
@@ -25,6 +30,8 @@ public class MemberPost {
         HashMap<String, Object> result = new HashMap<>();
         result.put("user_name", user_name);
         result.put("home_door_id", home_door_id);
+        result.put("token", token);
+        result.put("user_id", user_id);
         return result;
     }
 }
