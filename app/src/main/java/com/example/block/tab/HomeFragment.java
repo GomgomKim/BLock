@@ -22,6 +22,8 @@ import com.example.block.R;
 import com.example.block.database.MemberPost;
 import com.example.block.items.MemberItem;
 import com.example.block.web3j.ContactBlockchain;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -88,17 +90,23 @@ public class HomeFragment extends Fragment {
         ValueEventListener postListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.e("gomKim", "row: " + dataSnapshot.getChildrenCount());
+                Log.e("gomKing", "row: " + dataSnapshot.getChildrenCount());
                 user_info.clear();
                 for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
                     String key = postSnapshot.getKey();
                     MemberPost get = postSnapshot.getValue(MemberPost.class);
-                    String[] info = {get.user_name, get.home_door_id};
-                    Log.d("gomKim", "user_id: " + key);
-                    Log.d("gomKim", "user_name: " + info[0]);
-                    Log.d("gomKim", "home_door_id: " + info[1]);
-                    user_info.add(new MemberItem(String.valueOf(key), info[0], info[1]));
-                    afterSetting(key, info[0], info[1]);
+                    String[] info = {get.user_name, get.home_door_id,get.token, get.user_id};
+                    user_info.add(new MemberItem(String.valueOf(key), info[0], info[1],info[2]));
+//                    String user_id = ((UIdInterface)getActivity()).getUID();
+                    FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+                    FirebaseUser user = firebaseAuth.getCurrentUser();
+                    String user_id = user.getUid();
+                    if(user_id.equals(info[3])) { // user id가 일치하는것만
+                        afterSetting(key, info[0], info[1]);
+                        Log.d("gomKing", "user_id: " + key);
+                        Log.d("gomKing", "user_name: " + info[0]);
+                        Log.d("gomKing", "home_door_id: " + info[1]);
+                    } else continue;
                 }
             }
 

@@ -8,12 +8,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.example.block.R;
 import com.example.block.database.MemberPost;
 import com.google.firebase.database.DataSnapshot;
@@ -30,7 +27,6 @@ import butterknife.ButterKnife;
  */
 public class SearchBlockFragment extends Fragment {
 
-    @BindView(R.id.profile_img_detail) ImageView profile_img_detail;
     @BindView(R.id.home_door_id) TextView home_door_id;
 
     RelativeLayout layout = null;
@@ -51,7 +47,7 @@ public class SearchBlockFragment extends Fragment {
     }
 
     public void initSetting(){
-        Glide.with(getContext()).load(R.drawable.profile_sample).apply(new RequestOptions().circleCrop()).into(profile_img_detail);
+
     }
 
     public void getFirebaseDatabase(){

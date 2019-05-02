@@ -13,6 +13,8 @@ import android.widget.RelativeLayout;
 import com.example.block.R;
 import com.example.block.adapter.InvitationList_sub;
 import com.example.block.database.HostPost;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -31,6 +33,10 @@ public class ManageConfirmFragment extends Fragment {
 
     RelativeLayout layout = null;
 
+    private FirebaseAuth firebaseAuth;
+
+    String u_id;
+
     public ManageConfirmFragment() {
         // Required empty public constructor
     }
@@ -41,8 +47,15 @@ public class ManageConfirmFragment extends Fragment {
                              Bundle savedInstanceState) {
         layout = (RelativeLayout) inflater.inflate(R.layout.fragment_manage_confirm, container, false);
         ButterKnife.bind(this, layout);
+        initSetting();
         getFirebaseDatabaseHost();
         return layout;
+    }
+
+    public void initSetting(){
+        firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+        if (user != null) u_id = user.getUid();
     }
 
     public void createLayout(String door_id){ // host
@@ -64,7 +77,7 @@ public class ManageConfirmFragment extends Fragment {
                     Log.d("gomKim", "user_id: " + info[0]);
                     Log.d("gomKim", "user_name: " + info[1]);
                     Log.d("gomKim", "door_id: " + info[2]);
-                    createLayout(info[2]);
+                    if(u_id.equals(info[0])) createLayout(info[2]);
                 }
             }
 

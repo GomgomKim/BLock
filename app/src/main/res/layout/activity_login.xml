@@ -4,15 +4,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".auth.LoginActivity">
+    tools:context=".auth.LoginActivity"
+    android:background="#000000"
+    >
+
     <TextView
         android:id="@+id/tv_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/email"
-        android:layout_marginTop="200dp"
+        android:text="email"
+        android:layout_marginTop="100dp"
         android:layout_marginLeft="50dp"
-        android:layout_marginRight="50dp" />
+        android:layout_marginRight="50dp"
+        android:textColor="#ffffff"
+        android:fontFamily="@font/bodoniflf_bold"
+        />
 
     <EditText
         android:id="@+id/et_eamil"
@@ -20,17 +26,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="50dp"
-        android:layout_marginRight="50dp"/>
+        android:layout_marginRight="50dp"
+        app:theme="@style/LoginStyle"
+        android:textCursorDrawable="@null"
+        android:textColor="#ffffff"
+        />
 
     <TextView
         android:id="@+id/tv_password"
         android:layout_below="@id/et_eamil"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/password"
+        android:text="password"
         android:layout_centerInParent="true"
         android:layout_marginLeft="50dp"
-        android:layout_marginRight="50dp"/>
+        android:layout_marginRight="50dp"
+        android:textColor="#ffffff"
+        android:fontFamily="@font/bodoniflf_bold"
+        />
 
     <EditText
         android:id="@+id/et_password"
@@ -38,30 +51,94 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="50dp"
-        android:layout_marginRight="50dp"/>
+        android:layout_marginRight="50dp"
+        android:inputType="textPassword"
+        app:theme="@style/LoginStyle"
+        android:textCursorDrawable="@null"
+        android:textColor="#ffffff"
+        />
+
+    <TextView
+        android:id="@+id/tv_phone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/et_eamil"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="65dp"
+        android:layout_marginRight="50dp"
+        android:textColor="#ffffff"
+        android:fontFamily="@font/bodoniflf_bold"
+        android:text="phone number"
+
+        />
+
+    <EditText
+        android:id="@+id/et_phone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_password"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="70dp"
+        android:layout_marginRight="50dp"
+        app:theme="@style/LoginStyle"
+        android:textCursorDrawable="@null"
+        android:textColor="#ffffff"
+        />
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/et_eamil"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="139dp"
+        android:layout_marginRight="50dp"
+        android:textColor="#ffffff"
+        android:fontFamily="@font/bodoniflf_bold"
+        android:text="name" />
+
+    <EditText
+        android:id="@+id/et_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_password"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="135dp"
+        android:layout_marginRight="50dp"
+        app:theme="@style/LoginStyle"
+        android:textCursorDrawable="@null"
+        android:textColor="#ffffff"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/et_password">
+        android:layout_below="@+id/et_password"
+        android:layout_marginTop="206dp">
 
         <Button
             android:id="@+id/btn_signUp"
-            android:text="@string/signup"
-            android:onClick="singUp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
             android:layout_weight="1"
-            android:layout_marginLeft="50dp"/>
+            android:onClick="singUp"
+            android:text="sign up"
+            android:fontFamily="@font/bodoniflf_bold"
+            />
 
         <Button
             android:id="@+id/btn_signIn"
-            android:text="@string/signin"
-            android:onClick="signIn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginRight="50dp"
             android:layout_weight="1"
-            android:layout_marginRight="50dp"/>
+            android:onClick="signIn"
+            android:text="sign in"
+            android:fontFamily="@font/bodoniflf_bold"
+            />
 
     </LinearLayout>
 

@@ -8,6 +8,7 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.example.block.R;
+import com.example.block.auth.LoginActivity;
 
 public class SplashActivity extends Activity {
 
@@ -25,7 +26,7 @@ public class SplashActivity extends Activity {
 
         Handler handler = new Handler();
         handler.postDelayed(() -> {
-            Intent intent = new Intent(this, MainActivity.class);
+            Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
             finish();
         }, 3000);

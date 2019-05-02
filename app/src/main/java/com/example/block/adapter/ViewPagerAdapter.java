@@ -4,7 +4,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.view.ViewGroup;
 
-import com.example.block.tab.BlockHistoryFragment;
+import com.example.block.tab.AcceptFragment;
 import com.example.block.tab.HomeFragment;
 import com.example.block.tab.ManageConfirmFragment;
 import com.example.block.tab.MyBlockFragment;
@@ -33,9 +33,9 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
             case 2:
                 return new ManageConfirmFragment();
             case 3:
-                return new SearchBlockFragment();
+                return new AcceptFragment();
             case 4:
-                return new BlockHistoryFragment();
+                return new SearchBlockFragment();
             default:
                 return null;
         }

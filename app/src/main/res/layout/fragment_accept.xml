@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".tab.BlockHistoryFragment"
+    tools:context=".tab.AcceptFragment"
     android:background="#000000"
     android:paddingRight="30dp"
     android:paddingLeft="30dp"
@@ -17,7 +17,7 @@
         android:layout_below="@+id/none_block_img"
         android:layout_marginTop="50dp"
         android:fontFamily="@font/bodoniflf_bold"
-        android:text="History"
+        android:text="Request"
         android:textColor="#858edb"
         android:textSize="25dp"></TextView>
 

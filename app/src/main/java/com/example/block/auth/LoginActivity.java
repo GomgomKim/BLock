@@ -1,9 +1,8 @@
 package com.example.block.auth;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
@@ -11,16 +10,16 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.block.R;
-import com.example.block.User.User;
+import com.example.block.database.MemberPost;
 import com.example.block.main.MainActivity;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 public class LoginActivity extends AppCompatActivity {
@@ -37,9 +36,17 @@ public class LoginActivity extends AppCompatActivity {
     // 이메일과 비밀번호
     private EditText editTextEmail;
     private EditText editTextPassword;
+    private EditText editTextPhone;
+    private EditText editTextName;
+
 
     private String email = "";
     private String password = "";
+    private String phone="";
+    private String name="";
+
+    String u_id;
+    String token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,20 +57,21 @@ public class LoginActivity extends AppCompatActivity {
 
         editTextEmail = findViewById(R.id.et_eamil);
         editTextPassword = findViewById(R.id.et_password);
+        editTextPhone = findViewById(R.id.et_phone);
+        editTextName = findViewById(R.id.et_name);
 
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    // User is signed in
-                    Log.d("SolsolKim", "onAuthStateChanged:signed_in:" + user.getUid());
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                    finish();
 
-                } else { // User is signed out
-                    Log.d("SolsolKim", "onAuthStateChanged:signed_out");
-                }
+        mAuthListener = firebaseAuth -> {
+            FirebaseUser user = firebaseAuth.getCurrentUser();
+            if (user != null) {
+                // User is signed in
+                u_id = user.getUid();
+                Log.d("solKim", "onAuthStateChanged:signed_in:" + user.getUid());
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                finish();
+
+            } else { // User is signed out
+                Log.d("solKim", "onAuthStateChanged:signed_out");
             }
         };
 
@@ -85,12 +93,16 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    public void singUp(View view) {
+    public void singUp(View view) {//가입
         email = editTextEmail.getText().toString();
         password = editTextPassword.getText().toString();
+        phone = editTextPhone.getText().toString();
+        name = editTextName.getText().toString();
 
         if(isValidEmail() && isValidPasswd()) {
-            createUser(email, password);
+            if(isValidPhone() &&isValidName()){
+                createUser(email, password);
+            }
         }
     }
 
@@ -128,30 +140,52 @@ public class LoginActivity extends AppCompatActivity {
             return true;
         }
     }
+    // 전화번호 유효성 검사
+    private boolean isValidPhone() {
+        if (phone.isEmpty()) {
+            // phone 공백
+            return false;
+        } else if (!PASSWORD_PATTERN.matcher(phone).matches()) {
+            // 비밀번호 형식 불일치
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    // 이름 유효성 검사
+    private boolean isValidName() {
+        if (phone.isEmpty()) {
+            // phone 공백
+            return false;
+        } else if (!PASSWORD_PATTERN.matcher(name).matches()) {
+            // 비밀번호 형식 불일치
+            return false;
+        } else {
+            return true;
+        }
+    }
 
     // 회원가입
     private void createUser(String email, String password) {
         firebaseAuth.createUserWithEmailAndPassword(email, password)
-//                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<AuthResult> task) {
-//                        if (task.isSuccessful()) {
-//                            // 회원가입 성공
-//                            Log.d("solKim","Sign In Success");
-//                        } else {
-//                            // 회원가입 실패
-//                            Log.d("solKim","Sign In Fail");
-//                        }
-//                    }
-//                });
-        .addOnCompleteListener(task -> {
-            if(task.isSuccessful()){
-                FirebaseUser user = task.getResult().getUser();
-                User userModel =new User(user.getEmail());
-                databaseReference.child("user").child(user.getUid()).setValue(userModel);
-            }
+                .addOnCompleteListener(task -> {
+                    if(task.isSuccessful()){
+//                FirebaseUser user = task.getResult().getUser();
+                        token = FirebaseInstanceId.getInstance().getToken();
+//                String token = "token1";
+                        Log.d("SolKim", "Token:" + token);
+//                User userModel =new User(token);
+//                databaseReference.child("user").child(user.getUid()).setValue(userModel);
+                        Map<String, Object> set_value = new HashMap<>();
+                        Map<String, Object> getMember = null;
+                        MemberPost memberPost = new MemberPost(name, "", token, u_id);
+                        getMember = memberPost.toMap();
+                        set_value.put("/member/"+phone, getMember);
+                        databaseReference.updateChildren(set_value);
+                    }
 
-        }).addOnFailureListener(e->{
+                }).addOnFailureListener(e->{
 
         });
     }
@@ -160,19 +194,15 @@ public class LoginActivity extends AppCompatActivity {
     private void loginUser(String email, String password)
     {
         firebaseAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // 로그인 성공
-                            Toast.makeText(LoginActivity.this, R.string.success_login, Toast.LENGTH_SHORT).show();
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        // 로그인 성공
+                        Toast.makeText(LoginActivity.this, R.string.success_login, Toast.LENGTH_SHORT).show();
 
-                        } else {
-                            // 로그인 실패
-                            Toast.makeText(LoginActivity.this, R.string.failed_login, Toast.LENGTH_SHORT).show();
-                        }
+                    } else {
+                        // 로그인 실패
+                        Toast.makeText(LoginActivity.this, R.string.failed_login, Toast.LENGTH_SHORT).show();
                     }
                 });
     }
-
 }

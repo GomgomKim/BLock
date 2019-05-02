@@ -45,6 +45,8 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             app:theme="@style/EditTextStyle"
+            android:textCursorDrawable="@null"
+            android:textColor="#e67988"
             />
 
     </LinearLayout>

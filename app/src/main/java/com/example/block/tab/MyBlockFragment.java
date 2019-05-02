@@ -14,6 +14,8 @@ import com.example.block.R;
 import com.example.block.adapter.DoorList_sub;
 import com.example.block.database.GuestPost;
 import com.example.block.database.HostPost;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -31,6 +33,10 @@ public class MyBlockFragment extends Fragment {
     @BindView(R.id.door_grid) GridLayout door_grid;
 
     RelativeLayout layout = null;
+
+    private FirebaseAuth firebaseAuth;
+
+    String u_id;
 
     public MyBlockFragment() {
         // Required empty public constructor
@@ -50,7 +56,9 @@ public class MyBlockFragment extends Fragment {
     }
 
     public void initSetting(){
-
+        firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+        if (user != null) u_id = user.getUid();
     }
 
     public void setDoorMove(){
@@ -58,13 +66,13 @@ public class MyBlockFragment extends Fragment {
     }
 
     public void createLayout(String door_id){ // host
-        DoorList_sub doorList_sub = new DoorList_sub(getContext());
+        DoorList_sub doorList_sub = new DoorList_sub(getActivity());
         doorList_sub.setHost(door_id);
         door_grid.addView(doorList_sub);
     }
 
     public void createLayout(String door_id, String start_time, String end_time){ // guest
-        DoorList_sub doorList_sub = new DoorList_sub(getContext());
+        DoorList_sub doorList_sub = new DoorList_sub(getActivity());
         doorList_sub.setGuest(door_id, start_time, end_time);
         door_grid.addView(doorList_sub);
     }
@@ -84,7 +92,7 @@ public class MyBlockFragment extends Fragment {
                     Log.d("gomKim", "user_id: " + info[0]);
                     Log.d("gomKim", "user_name: " + info[1]);
                     Log.d("gomKim", "door_id: " + info[2]);
-                    createLayout(info[2]);
+                    if(u_id.equals(info[0])) createLayout(info[2]);
                 }
             }
 
@@ -112,7 +120,7 @@ public class MyBlockFragment extends Fragment {
                     Log.d("gomKim", "door_id: " + info[2]);
                     Log.d("gomKim", "start_time: " + info[3]);
                     Log.d("gomKim", "end_time: " + info[4]);
-                    createLayout(info[2], info[3], info[4]);
+                    if(u_id.equals(info[0])) createLayout(info[2], info[3], info[4]);
                 }
             }
 

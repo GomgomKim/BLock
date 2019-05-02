@@ -75,16 +75,16 @@ public class MainActivity extends AppCompatActivity implements MainInterface {
         );
         models.add(
                 new NavigationTabBar.Model.Builder(
-                        getResources().getDrawable(R.drawable.search),
-                        Color.parseColor("#aec865"))
-                        .title("Info")
+                        getResources().getDrawable(R.drawable.history),
+                        Color.parseColor("#858edb"))
+                        .title("Request")
                         .build()
         );
         models.add(
                 new NavigationTabBar.Model.Builder(
-                        getResources().getDrawable(R.drawable.history),
-                        Color.parseColor(colors[0]))
-                        .title("History")
+                        getResources().getDrawable(R.drawable.search),
+                        Color.parseColor("#aec865"))
+                        .title("Info")
                         .build()
         );
         navigationTabBar.setModels(models);
