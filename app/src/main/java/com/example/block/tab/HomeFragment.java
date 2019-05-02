@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.block.R;
 import com.example.block.database.MemberPost;
+import com.example.block.interfaces.UIdInterface;
 import com.example.block.items.MemberItem;
 import com.example.block.web3j.ContactBlockchain;
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,6 +30,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.web3j.protocol.exceptions.TransactionException;
 

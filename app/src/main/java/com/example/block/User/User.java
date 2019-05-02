@@ -3,8 +3,10 @@ package com.example.block.User;
 public class User {
     private String email;
 
+
     public User(String email) {
         this.email = email;
+
     }
 
     public String getEmail() {
@@ -14,4 +16,5 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
+
 }
