@@ -14,12 +14,8 @@ import android.widget.Toast;
 
 import com.example.block.R;
 import com.example.block.database.MemberPost;
-import com.example.block.interfaces.UIdInterface;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -139,15 +135,7 @@ public class DoorList_sub extends LinearLayout {
         Map<String, Object> childUpdates = new HashMap<>();
         Map<String, Object> postValues = null;
         if(add){
-//            String u_id = ((UIdInterface)getContext()).getUID();
-//            String token = ((UIdInterface)getContext()).getToken();
-
-            FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-            FirebaseUser user = firebaseAuth.getCurrentUser();
-            String u_id = user.getUid();
-
-            String token = FirebaseInstanceId.getInstance().getToken();
-            MemberPost post = new MemberPost("김기연", door_id, token, u_id);
+            MemberPost post = new MemberPost("김기연", door_id);
             postValues = post.toMap();
         }
         childUpdates.put("/member/" + "01099296975", postValues);
