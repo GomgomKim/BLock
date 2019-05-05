@@ -1,5 +1,6 @@
 package com.example.block.main;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements MainInterface {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initUI();
+        onNewIntent(getIntent());
     }
 
     @Override
@@ -39,6 +41,16 @@ public class MainActivity extends AppCompatActivity implements MainInterface {
         backPressCloseHandler.onBackPressed();
     }
 
+
+    //noti 누르면 바로 accept화면으로
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Bundle extras = intent.getExtras();
+        if(extras != null){
+            viewPager.setCurrentItem(3);
+        }
+    }
 
     private void initUI() {
         backPressCloseHandler = new BackPressCloseHandler(this);

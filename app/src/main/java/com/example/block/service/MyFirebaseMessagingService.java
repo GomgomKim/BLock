@@ -3,18 +3,17 @@ package com.example.block.service;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
-
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.example.block.R;
+import com.example.block.main.MainActivity;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -36,11 +35,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
                 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-                Intent intent = new Intent();
                 BitmapDrawable bitmapDrawable = (BitmapDrawable)getResources().getDrawable(R.mipmap.ic_launcher);
                 Bitmap bitmap = bitmapDrawable.getBitmap();
 
-                PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(),0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.putExtra("NotificationMessage", "message");
+                intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+                PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(),0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext()).
                         setLargeIcon(bitmap)
@@ -49,7 +51,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                                 setShowWhen(true).
                                 setAutoCancel(true).setPriority(NotificationCompat.PRIORITY_MAX)
                         .setContentTitle(getString(R.string.app_name))
-                        .setDefaults(Notification.DEFAULT_VIBRATE)
+                        .setDefaults(Notification.FLAG_AUTO_CANCEL)
                         .setFullScreenIntent(pendingIntent,true)
                         .setContentIntent(pendingIntent)
                         .setContentText(body); // Firebase Console 에서 사용자가 전달한 메시지내용
@@ -68,6 +70,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                 NotificationChannel notificationChannel = new NotificationChannel(Noti_Channel_ID,Noti_Channel_Group_ID,importance);
 
+                PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(),0, new Intent(getApplicationContext(), MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
 
                 if(notificationManager.getNotificationChannel(Noti_Channel_ID) != null){
                 }
@@ -78,8 +81,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 notificationManager.createNotificationChannel(notificationChannel);
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(),Noti_Channel_ID)
                         .setLargeIcon(null).setSmallIcon(R.mipmap.ic_launcher)
-                        .setWhen(System.currentTimeMillis()).setShowWhen(true).
-                                setAutoCancel(true).setPriority(NotificationCompat.PRIORITY_MAX)
+                        .setWhen(System.currentTimeMillis()).setShowWhen(true)
+                        .setAutoCancel(true).setPriority(NotificationCompat.PRIORITY_MAX)
+                        .setFullScreenIntent(pendingIntent,true)
+                        .setContentIntent(pendingIntent)
                         .setContentTitle(getString(R.string.app_name))
                         .setContentText(body); // Firebase Console 에서 사용자가 전달한 메시지내용
 
