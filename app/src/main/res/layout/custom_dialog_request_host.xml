@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/blue_border"
+    android:padding="15dp"
+    >
+
+    <TextView
+        android:id="@+id/type"
+        android:layout_alignParentTop="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Type :"
+        android:textColor="#858edb"
+        android:fontFamily="@font/bodoniflf_bold"
+        android:textSize="25dp"
+        >
+    </TextView>
+
+    <TextView
+        android:id="@+id/sender"
+        android:layout_below="@+id/type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sender :"
+        android:textColor="#858edb"
+        android:fontFamily="@font/bodoniflf_bold"
+        android:textSize="25dp"
+        android:layout_marginTop="10dp"
+        >
+    </TextView>
+
+    <TextView
+        android:id="@+id/receiver"
+        android:layout_below="@+id/sender"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Receiver :"
+        android:textColor="#858edb"
+        android:fontFamily="@font/bodoniflf_bold"
+        android:textSize="25dp"
+        android:layout_marginTop="10dp"
+        >
+    </TextView>
+
+
+    <Button
+        android:id="@+id/accept_btn"
+        android:layout_below="@+id/receiver"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="accept"
+        android:textColor="#858edb"
+        android:fontFamily="@font/bodoniflf_bold"
+        android:textSize="20dp"
+        android:padding="10dp"
+        android:background="#77000000"
+        android:layout_marginTop="10dp"
+        />
+
+    <Button
+        android:id="@+id/deny_btn"
+        android:layout_below="@+id/receiver"
+        android:layout_toRightOf="@+id/accept_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="deny"
+        android:textColor="#e67988"
+        android:fontFamily="@font/bodoniflf_bold"
+        android:textSize="20dp"
+        android:padding="10dp"
+        android:background="#77000000"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="30dp"
+        />
+
+    <Button
+        android:id="@+id/close"
+        android:layout_below="@+id/receiver"
+        android:layout_toRightOf="@+id/deny_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Close"
+        android:textColor="#858edb"
+        android:fontFamily="@font/bodoniflf_bold"
+        android:textSize="20dp"
+        android:padding="10dp"
+        android:background="#77000000"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="30dp"
+        />
+
+
+
+</RelativeLayout>

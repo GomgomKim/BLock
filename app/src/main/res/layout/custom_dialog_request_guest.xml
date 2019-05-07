@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/blue_border"
+    android:padding="15dp"
+    >
+
+    <TextView
+        android:id="@+id/type"
+        android:layout_alignParentTop="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Type :"
+        android:textColor="#858edb"
+        android:fontFamily="@font/bodoniflf_bold"
+        android:textSize="25dp"
+        >
+    </TextView>
+
+    <TextView
+        android:id="@+id/sender"
+        android:layout_below="@+id/type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sender :"
+        android:textColor="#858edb"
+        android:fontFamily="@font/bodoniflf_bold"
+        android:textSize="25dp"
+        android:layout_marginTop="10dp"
+        >
+    </TextView>
+
+    <TextView
+        android:id="@+id/start_date_time"
+        android:layout_below="@+id/sender"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start :"
+        android:textColor="#858edb"
+        android:fontFamily="@font/bodoniflf_bold"
+        android:textSize="25dp"
+        android:layout_marginTop="10dp"
+        >
+    </TextView>
+
+    <TextView
+        android:id="@+id/end_date_time"
+        android:layout_below="@+id/start_date_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="End :"
+        android:textColor="#858edb"
+        android:fontFamily="@font/bodoniflf_bold"
+        android:textSize="25dp"
+        android:layout_marginTop="10dp"
+        >
+    </TextView>
+
+    <Button
+        android:id="@+id/confirm_btn"
+        android:layout_below="@+id/end_date_time"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Confirm"
+        android:textColor="#858edb"
+        android:fontFamily="@font/bodoniflf_bold"
+        android:textSize="20dp"
+        android:padding="10dp"
+        android:background="#77000000"
+        android:layout_marginTop="10dp"
+        />
+
+
+
+
+
+</RelativeLayout>

@@ -18,7 +18,9 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.block.R;
-import com.example.block.database.HostRequestPost;
+import com.example.block.database.GuestPost;
+import com.example.block.database.GuestRequestPost;
+import com.example.block.database.HostPost;
 import com.example.block.database.MemberPost;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -90,6 +92,7 @@ public class InvitationList_sub extends LinearLayout {
     private String receiver_token;
 
     private long host_req_row;
+    private long guest_req_row;
 
     String date_text;
     int time_count = 0;
@@ -223,14 +226,22 @@ public class InvitationList_sub extends LinearLayout {
 
             builder.setPositiveButton("Yes",
                     (dialog13, which) -> {
-                        if(is_host == 0) getFirebaseDatabase(String.valueOf(search_user_id.getText()));
+                        if(is_host == 0) { // guest 전송
+                            getFirebaseDatabase(
+                                    String.valueOf(search_user_id.getText()),
+                                    String.valueOf(start_date_time.getText()),
+                                    String.valueOf(end_date_time.getText())
+                            );
+                        }
+                        else if(is_host == 1){ // host 전송
+                            findHosts(door_id);
+                        }
                     });
             builder.setNegativeButton("No",
                     (dialog1, which) -> {
 
                     });
             builder.show();
-            dialog.dismiss();
         });
 
         close_dialog.setOnClickListener(v -> {
@@ -240,18 +251,30 @@ public class InvitationList_sub extends LinearLayout {
         dialog.show();
     }
 
-    public void postFirebaseDatabase(String my_name, String my_phone, String receiver_token, String door_id){
+
+    public void postGuestReqFirebaseDatabase(String my_name, String my_phone, String receiver_token, String door_id, String start_time, String end_time){
         mPostReference = FirebaseDatabase.getInstance().getReference();
         Map<String, Object> childUpdates = new HashMap<>();
         Map<String, Object> postValues = null;
 
-        HostRequestPost post = new HostRequestPost(my_phone,my_name, receiver_token, door_id);
+        GuestRequestPost post = new GuestRequestPost(my_phone, my_name, receiver_token, door_id, start_time, end_time);
         postValues = post.toMap();
 
-        getHostReqRow(childUpdates, postValues);
+        getGuestReqRow(childUpdates, postValues);
     }
 
-    public void getFirebaseDatabase(String text){ //guest 전송
+    public void postGuestFirebaseDatabase(String rcv_id, String rcv_name, String door_id, String start_time, String end_time){
+        mPostReference = FirebaseDatabase.getInstance().getReference();
+        Map<String, Object> childUpdates = new HashMap<>();
+        Map<String, Object> postValues = null;
+
+        GuestPost post = new GuestPost(rcv_id, rcv_name, door_id, start_time, end_time);
+        postValues = post.toMap();
+
+        getGuestRow(childUpdates, postValues);
+    }
+
+    public void getFirebaseDatabase(String text, String start_time, String end_time){ //guest 전송
         ValueEventListener postListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -279,13 +302,15 @@ public class InvitationList_sub extends LinearLayout {
                     if(text.equals(key)) {
                         user_flag = true;
                         receiver_token = info[2];
-                        sendPostToFCM( info[2],my_name+"("+my_phone+") 이 당신을 door : "+door_id+"의 guest로 초대했습니다!");
+                        // guest 계약내용 저장
+                        postGuestFirebaseDatabase(info[3], info[0], door_id, start_time, end_time);
+                        sendPostToFCM( info[2],my_name+"("+my_phone+")의 guest초대!");
                         break;
                     }
                 }
                 if(user_flag) {
                     //요청정보 DB 저장
-                    postFirebaseDatabase(my_name, my_phone, receiver_token, door_id);
+                    postGuestReqFirebaseDatabase(my_name, my_phone, receiver_token, door_id, start_time, end_time);
                     Toast.makeText(getContext(), "send !", Toast.LENGTH_SHORT).show();
                 }
                 else Toast.makeText(getContext(), "No such user !", Toast.LENGTH_SHORT).show();
@@ -300,14 +325,13 @@ public class InvitationList_sub extends LinearLayout {
         sortbyAge.addListenerForSingleValueEvent(postListener);
     }
 
-    public void getHostReqRow(Map<String, Object> childUpdates, Map<String, Object> postValues){
+
+    public void getGuestReqRow(Map<String, Object> childUpdates, Map<String, Object> postValues){
         ValueEventListener postListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                host_req_row = dataSnapshot.getChildrenCount();
-                Log.i("host_req_row2", "row : "+host_req_row);
-                Log.e("gomKim", "row: " + dataSnapshot.getChildrenCount());
-                childUpdates.put("/hostreq/" + String.valueOf(host_req_row+1), postValues);
+                guest_req_row = dataSnapshot.getChildrenCount();
+                childUpdates.put("/guestreq/" + String.valueOf(guest_req_row+1), postValues);
                 mPostReference.updateChildren(childUpdates);
             }
 
@@ -316,15 +340,98 @@ public class InvitationList_sub extends LinearLayout {
                 Log.w("gomKim","loadPost:onCancelled", databaseError.toException());
             }
         };
-        Query sortbyAge = FirebaseDatabase.getInstance().getReference().child("hostreq");
+        Query sortbyAge = FirebaseDatabase.getInstance().getReference().child("guestreq");
         sortbyAge.addListenerForSingleValueEvent(postListener);
     }
 
-    public void getDatePikcer(){
+    public void getGuestRow(Map<String, Object> childUpdates, Map<String, Object> postValues){
+        ValueEventListener postListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                long guest_row = dataSnapshot.getChildrenCount();
+                childUpdates.put("/guest/" + String.valueOf(guest_row+1), postValues);
+                mPostReference.updateChildren(childUpdates);
+            }
 
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w("gomKim","loadPost:onCancelled", databaseError.toException());
+            }
+        };
+        Query sortbyAge = FirebaseDatabase.getInstance().getReference().child("guest");
+        sortbyAge.addListenerForSingleValueEvent(postListener);
     }
 
-    public void getTimePicker(){
+    // host 전송
+    public void findHosts(String door_id){
+        ValueEventListener postListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                boolean user_flag = false;
+                Log.e("gomKim", "row: " + dataSnapshot.getChildrenCount());
+                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                    String key = postSnapshot.getKey();
+                    HostPost get = postSnapshot.getValue(HostPost.class);
+                    String[] info = {get.door_id, get.user_id};
 
+                    /*
+                    index : key
+                    door_id : info[0]
+                    user_id : info[1]
+                     */
+
+                    if(door_id.equals(info[1])){
+                        sendAllOfHost(info[1]);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w("gomKim","loadPost:onCancelled", databaseError.toException());
+            }
+        };
+        Query sortbyAge = FirebaseDatabase.getInstance().getReference().child("host");
+        sortbyAge.addListenerForSingleValueEvent(postListener);
     }
+
+    // host 전송
+    public void sendAllOfHost(String user_id){
+        ValueEventListener postListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                boolean user_flag = false;
+                Log.e("gomKim", "row: " + dataSnapshot.getChildrenCount());
+                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                    String key = postSnapshot.getKey();
+                    MemberPost get = postSnapshot.getValue(MemberPost.class);
+                    String[] info = {get.user_name, get.token, get.user_id};
+
+                    /*
+                    user phone : key
+                    user name : info[0]
+                    user token : info[1]
+                    user id : info[2]
+                     */
+
+                    if(user_id.equals(info[2])) {
+                        user_flag = true;
+                        sendPostToFCM( info[1],"host 초대요청! 수락 / 거절 하세요!");
+                        break;
+                    }
+                }
+                if(user_flag) Toast.makeText(getContext(), "send !", Toast.LENGTH_SHORT).show();
+                else Toast.makeText(getContext(), "No such user !", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w("gomKim","loadPost:onCancelled", databaseError.toException());
+            }
+        };
+        Query sortbyAge = FirebaseDatabase.getInstance().getReference().child("member");
+        sortbyAge.addListenerForSingleValueEvent(postListener);
+    }
+
+
 }

@@ -70,7 +70,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                 NotificationChannel notificationChannel = new NotificationChannel(Noti_Channel_ID,Noti_Channel_Group_ID,importance);
 
-                PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(),0, new Intent(getApplicationContext(), MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.putExtra("NotificationMessage", "message");
+                intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+                PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(),0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
                 if(notificationManager.getNotificationChannel(Noti_Channel_ID) != null){
                 }

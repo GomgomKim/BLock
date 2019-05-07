@@ -173,7 +173,6 @@ public class LoginActivity extends AppCompatActivity {
                     if(task.isSuccessful()){
 //                FirebaseUser user = task.getResult().getUser();
                         token = FirebaseInstanceId.getInstance().getToken();
-//                String token = "token1";
                         Log.d("SolKim", "Token:" + token);
 //                User userModel =new User(token);
 //                databaseReference.child("user").child(user.getUid()).setValue(userModel);

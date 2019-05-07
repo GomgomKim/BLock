@@ -20,7 +20,7 @@ import devlight.io.library.ntb.NavigationTabBar;
 
 public class MainActivity extends AppCompatActivity implements MainInterface {
 
-    ViewPager viewPager;
+    static ViewPager viewPager;
     ViewPagerAdapter viewPagerAdapter;
     NavigationTabBar navigationTabBar;
     ArrayList<NavigationTabBar.Model> models;
@@ -124,5 +124,9 @@ public class MainActivity extends AppCompatActivity implements MainInterface {
     @Override
     public void setViewpager(int index) {
         navigationTabBar.setViewPager(viewPager, index);
+    }
+
+    static void setCurrentViewpager(int index){
+        viewPager.setCurrentItem(index);
     }
 }

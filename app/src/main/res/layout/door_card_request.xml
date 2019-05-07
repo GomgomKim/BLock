@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/card_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="150dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/blue_border"
+    android:padding="20dp"
+    >
+
+    <TextView
+        android:id="@+id/type_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Type : "
+        android:textColor="#858edb"
+        android:fontFamily="@font/bodoniflf_bold"
+        android:textSize="15dp"
+        />
+
+    <TextView
+        android:id="@+id/sender_text"
+        android:layout_below="@+id/type_text"
+        android:layout_marginTop="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sender : "
+        android:textColor="#858edb"
+        android:fontFamily="@font/bodoniflf_bold"
+        android:textSize="15dp"
+        />
+
+</RelativeLayout>
