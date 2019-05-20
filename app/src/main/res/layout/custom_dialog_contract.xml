@@ -75,7 +75,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <android.support.v7.widget.AppCompatRadioButton
+                <RadioButton
                     android:id="@+id/host_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -86,7 +86,7 @@
                     android:checked="true"
                     />
 
-                <android.support.v7.widget.AppCompatRadioButton
+                <RadioButton
                     android:id="@+id/guest_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

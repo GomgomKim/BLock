@@ -40,7 +40,7 @@
         android:layout_marginBottom="50dp"
         >
         <GridLayout
-            android:id="@+id/door_grid"
+            android:id="@+id/request_grid"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:columnCount="1"

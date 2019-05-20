@@ -59,9 +59,11 @@ public class ManageConfirmFragment extends Fragment {
     }
 
     public void createLayout(String door_id){ // host
-        InvitationList_sub doorList_sub = new InvitationList_sub(getContext());
-        doorList_sub.setHost(door_id);
-        door_grid.addView(doorList_sub);
+        if(getContext() != null){
+            InvitationList_sub doorList_sub = new InvitationList_sub(getContext());
+            doorList_sub.setHost(door_id);
+            door_grid.addView(doorList_sub);
+        }
     }
 
     public void getFirebaseDatabaseHost(){

@@ -45,35 +45,9 @@
         >
     </TextView>
 
-    <TextView
-        android:id="@+id/start_date_time"
-        android:layout_below="@+id/sender"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Start :"
-        android:textColor="#858edb"
-        android:fontFamily="@font/bodoniflf_bold"
-        android:textSize="25dp"
-        android:layout_marginTop="10dp"
-        >
-    </TextView>
-
-    <TextView
-        android:id="@+id/end_date_time"
-        android:layout_below="@+id/start_date_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="End :"
-        android:textColor="#858edb"
-        android:fontFamily="@font/bodoniflf_bold"
-        android:textSize="25dp"
-        android:layout_marginTop="10dp"
-        >
-    </TextView>
-
     <Button
         android:id="@+id/confirm_btn"
-        android:layout_below="@+id/end_date_time"
+        android:layout_below="@+id/sender"
         android:layout_centerHorizontal="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

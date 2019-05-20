@@ -15,7 +15,7 @@
         android:layout_marginTop="50dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Home Door List"
+        android:text="Invitation"
         android:textColor="#e67988"
         android:fontFamily="@font/bodoniflf_bold"
         android:textSize="25dp"

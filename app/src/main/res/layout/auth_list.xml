@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/auth_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/yellow_border"
+    android:padding="15dp"
+    >
+
+    <ScrollView
+        android:id="@+id/scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/host_title"
+            android:layout_alignParentTop="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="[ Host ]"
+            android:textColor="#e7b452"
+            android:fontFamily="@font/bodoniflf_bold"
+            android:textSize="25dp"
+            >
+        </TextView>
+
+        <LinearLayout
+            android:id="@+id/host_list"
+            android:orientation="vertical"
+            android:layout_below="@+id/host_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="#e7b452"
+            android:fontFamily="@font/bodoniflf_bold"
+            android:textSize="25dp"
+            >
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/guest_title"
+            android:layout_below="@+id/host_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="[ Guest ]"
+            android:textColor="#e7b452"
+            android:fontFamily="@font/bodoniflf_bold"
+            android:textSize="25dp"
+            >
+        </TextView>
+
+        <LinearLayout
+            android:id="@+id/guest_list"
+            android:orientation="vertical"
+            android:layout_below="@+id/guest_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="#e7b452"
+            android:fontFamily="@font/bodoniflf_bold"
+            android:textSize="25dp"
+            >
+        </LinearLayout>
+
+
+        <Button
+            android:id="@+id/close"
+            android:layout_below="@+id/guest_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Close"
+            android:textColor="#e7b452"
+            android:fontFamily="@font/bodoniflf_bold"
+            android:textSize="20dp"
+            android:padding="10dp"
+            android:background="#77000000"
+            android:layout_marginTop="10dp"
+            />
+    </RelativeLayout>
+
+    </ScrollView>
+
+
+
+</RelativeLayout>

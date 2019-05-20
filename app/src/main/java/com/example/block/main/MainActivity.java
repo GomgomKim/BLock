@@ -1,9 +1,16 @@
 package com.example.block.main;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +40,8 @@ public class MainActivity extends AppCompatActivity implements MainInterface {
         setContentView(R.layout.activity_main);
         initUI();
         onNewIntent(getIntent());
+        checkPermission();
+        setIsNetwork();
     }
 
     @Override
@@ -42,6 +51,12 @@ public class MainActivity extends AppCompatActivity implements MainInterface {
     }
 
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        viewPagerAdapter.notifyDataSetChanged();
+    }
+
     //noti 누르면 바로 accept화면으로
     @Override
     protected void onNewIntent(Intent intent) {
@@ -49,6 +64,20 @@ public class MainActivity extends AppCompatActivity implements MainInterface {
         Bundle extras = intent.getExtras();
         if(extras != null){
             viewPager.setCurrentItem(3);
+        }
+    }
+
+    public void setIsNetwork(){
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        if(networkInfo != null && networkInfo.isConnected()){
+
+        } else{
+            // alert
+            AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
+            alert.setPositiveButton("확인", (dialog, which) -> dialog.dismiss());
+            alert.setMessage("네트워크가 연결되지 않았습니다. 일부 기능이 제한될 수 있습니다.");
+            alert.show();
         }
     }
 
@@ -75,14 +104,14 @@ public class MainActivity extends AppCompatActivity implements MainInterface {
                 new NavigationTabBar.Model.Builder(
                         getResources().getDrawable(R.drawable.locking),
                         Color.parseColor("#e7b452"))
-                        .title("MyDoor")
+                        .title("Door List")
                         .build()
         );
         models.add(
                 new NavigationTabBar.Model.Builder(
                         getResources().getDrawable(R.drawable.ic_third),
                         Color.parseColor("#e67988"))
-                        .title("Contract")
+                        .title("Invitation")
                         .build()
         );
         models.add(
@@ -119,6 +148,28 @@ public class MainActivity extends AppCompatActivity implements MainInterface {
                 model.hideBadge();
             }
         });
+    }
+
+    public void checkPermission(){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.READ_EXTERNAL_STORAGE)) {
+
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        1);
+            }
+        }
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        1);
+            }
+        }
     }
 
     @Override

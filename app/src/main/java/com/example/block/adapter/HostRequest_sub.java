@@ -16,7 +16,6 @@ import com.example.block.R;
 import com.example.block.database.HostPost;
 import com.example.block.database.HostRequestPost;
 import com.example.block.database.MemberPost;
-import com.example.block.main.MainActivity;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -36,7 +35,7 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class RequestList_sub extends LinearLayout {
+public class HostRequest_sub extends LinearLayout {
 
     private static final String FCM_MESSAGE_URL = "https://fcm.googleapis.com/fcm/send";
     private static final String SERVER_KEY = "AAAAmgpQZrg:APA91bHs4Bw8PHI_RXxWpxQGFidTm5QJ0Cy8o8dO0GUS5Ua48Oq6Jc0J1dyuLsMBmODmV0zYyL0IMs1diPbSO2tt0qtnF1C1ybLsWRFvhQztO2lqgmVkyTP0yrlcnOuq2ogq-ZqT-QQg";
@@ -77,13 +76,11 @@ public class RequestList_sub extends LinearLayout {
 
     LinearLayout layout;
 
-    int is_host = 0; // 0: guest / 1: host
-
     private DatabaseReference mPostReference;
 
-    private String sender_name, sender_phone, start_time, end_time, receiver_name, receiver_phone, door_id, receiver_token;
+    private String sender_name, sender_phone, receiver_name, receiver_phone, door_id, receiver_token;
 
-    public RequestList_sub(Context context) {
+    public HostRequest_sub(Context context) {
         super(context);
         initSetting(context);
     }
@@ -93,14 +90,13 @@ public class RequestList_sub extends LinearLayout {
         layout = (LinearLayout) inflater.inflate(R.layout.door_card_request, this, true);
         ButterKnife.bind(layout);
         card_layout.setOnClickListener(v -> {
-            setDialog();
+            setDialog(context);
         });
     }
 
     public void setHost(String sender_name, String sender_phone, String receiver_name, String receiver_phone, String door_id, String receiver_token){
-        type_text.setText("Type : host");
-        sender_text.setText("Sender : "+sender_name+"("+sender_phone+")");
-        is_host = 1;
+        type_text.setText("[Type]\nhost");
+        sender_text.setText("[Sender]\n"+sender_name+"("+sender_phone+")");
         this.sender_name = sender_name;
         this.sender_phone = sender_phone;
         this.receiver_name = receiver_name;
@@ -109,85 +105,61 @@ public class RequestList_sub extends LinearLayout {
         this.receiver_token = receiver_token;
     }
 
-    public void setGuest(String sender_name, String sender_phone, String start_time, String end_time, String door_id){
-        type_text.setText("Type : guest");
-        sender_text.setText("Sender : "+sender_name+"("+sender_phone+")");
-        is_host = 0;
-        this.sender_name = sender_name;
-        this.sender_phone = sender_phone;
-        this.start_time = start_time;
-        this.end_time = end_time;
-        this.door_id = door_id;
-        this.receiver_token = receiver_token;
-    }
-
-    public void setDialog(){
-        Dialog dialog = new Dialog(getContext());
+    public void setDialog(Context context){
+        Dialog dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        if(is_host == 1) { // host
-            dialog.setContentView(R.layout.custom_dialog_request_host);
-            TextView type = (TextView) dialog.findViewById(R.id.type);
-            TextView sender = (TextView) dialog.findViewById(R.id.sender);
-            TextView receiver = (TextView) dialog.findViewById(R.id.receiver);
-            Button accept_btn = (Button) dialog.findViewById(R.id.accept_btn);
-            Button deny_btn = (Button) dialog.findViewById(R.id.deny_btn);
-            Button close = (Button) dialog.findViewById(R.id.close);
+        dialog.setContentView(R.layout.custom_dialog_request_host);
+        TextView type = (TextView) dialog.findViewById(R.id.type);
+        TextView door = (TextView) dialog.findViewById(R.id.door);
+        TextView sender = (TextView) dialog.findViewById(R.id.sender);
+        TextView receiver = (TextView) dialog.findViewById(R.id.receiver);
+        Button accept_btn = (Button) dialog.findViewById(R.id.accept_btn);
+        Button deny_btn = (Button) dialog.findViewById(R.id.deny_btn);
+        Button close = (Button) dialog.findViewById(R.id.close);
 
-            type.setText("Type : host request");
-            sender.setText("Sender : "+sender_name+"("+sender_phone+")");
-            receiver.setText("Receiver : "+receiver_name+"("+receiver_phone+")");
-            accept_btn.setOnClickListener(v -> {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle("Host request accept");
-                builder.setMessage("Would you like to accept this request?");
-                builder.setPositiveButton("Yes",
-                        (dialog12, which) -> {
-                            getHostReqData(false);
-                            Toast.makeText(getContext(), "accepted", Toast.LENGTH_SHORT).show();
-                        });
-                builder.setNegativeButton("No",
-                        (dialog1, which) -> {
+        type.setText("[Type]\nHost invitation");
+        door.setText("[Door]\n"+door_id);
+        sender.setText("[Sender]\n"+sender_name+"("+sender_phone+")");
+        receiver.setText("[Receiver]\n"+receiver_name+"("+receiver_phone+")");
+        accept_btn.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle("Host invitation accept");
+            builder.setMessage("Would you like to accept this invitation?");
+            builder.setPositiveButton("Yes",
+                    (dialog12, which) -> {
+                        getHostReqData(false);
+                        Toast.makeText(getContext(), "accepted", Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                        removeAllViews();
+                    });
+            builder.setNegativeButton("No",
+                    (dialog1, which) -> {
 
-                        });
-                builder.show();
-            });
+                    });
+            builder.show();
+        });
 
-            deny_btn.setOnClickListener(v -> {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle("Host request deny");
-                builder.setMessage("Would you like to deny this request?");
-                builder.setPositiveButton("Yes",
-                        (dialog12, which) -> {
-                            getHostReqData(true);
-                            Toast.makeText(getContext(), "denyed", Toast.LENGTH_SHORT).show();
-                        });
-                builder.setNegativeButton("No",
-                        (dialog1, which) -> {
+        deny_btn.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle("Host invitation deny");
+            builder.setMessage("Would you like to deny this invitation?");
+            builder.setPositiveButton("Yes",
+                    (dialog12, which) -> {
+                        getHostReqData(true);
+                        Toast.makeText(getContext(), "denyed", Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                        removeAllViews();
+                    });
+            builder.setNegativeButton("No",
+                    (dialog1, which) -> {
 
-                        });
-                builder.show();
-            });
-            close.setOnClickListener(v -> {
-                dialog.dismiss();
-            });
-        }
-        else if(is_host == 0) { // guest
-            dialog.setContentView(R.layout.custom_dialog_request_guest);
-            TextView type = (TextView) dialog.findViewById(R.id.type);
-            TextView sender = (TextView) dialog.findViewById(R.id.sender);
-            TextView start_date_time = (TextView) dialog.findViewById(R.id.start_date_time);
-            TextView end_date_time = (TextView) dialog.findViewById(R.id.end_date_time);
-            Button confirm_btn = (Button) dialog.findViewById(R.id.confirm_btn);
-
-            type.setText("Type : host request");
-            sender.setText("Sender : "+sender_name+"("+sender_phone+")");
-            start_date_time.setText("Start : "+start_time);
-            end_date_time.setText("End : "+end_time);
-            confirm_btn.setOnClickListener(v -> {
-                ((MainActivity)getContext()).setViewpager(1);
-            });
-        }
+                    });
+            builder.show();
+        });
+        close.setOnClickListener(v -> {
+            dialog.dismiss();
+        });
 
         dialog.show();
     }
@@ -216,11 +188,12 @@ public class RequestList_sub extends LinearLayout {
                            postFCMToSender(info[2]); // sender에게 거절됐다는 FCM 보내기
                        } else{
                            int count = Integer.parseInt(info[0]);
-                           if(count == 1){ // 모두 accept상황
-                               deleteHostReq(key);
+                           count --;
+                           if(count == 0){ // 모두 accept상황
+                               String accept_count = String.valueOf(count);
+                               postAcceptCount(key, accept_count, info[2], info[1], info[3], info[4]);
                                postFCMToReceiver(info[1], info[2], info[3]); // receiver에게 host 초대사실 FCM 보내기
                            } else{ // 아직 accept 진행중 -> count 줄이기
-                               count --;
                                String accept_count = String.valueOf(count);
                                postAcceptCount(key, accept_count, info[2], info[1], info[3], info[4]);
                            }
@@ -271,7 +244,7 @@ public class RequestList_sub extends LinearLayout {
         sortbyAge.addListenerForSingleValueEvent(postListener);
     }
 
-    public void postFCMToReceiver(String sender_name, String sender_phone, String receiver_phone){
+    public void postFCMToReceiver(String sender_name, String sender_phone, String receiver_token){
         ValueEventListener postListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -286,7 +259,8 @@ public class RequestList_sub extends LinearLayout {
                    receiver id : info[1]
                    receiver name : info[2]
                    */
-                    if(receiver_phone.equals(key)) {
+
+                    if(receiver_token.equals(info[0])) {
                         sendPostToFCM( info[0],sender_name+"("+sender_phone+")의 host초대!");
                         postHome(info[1], info[2], door_id); // host 테이블에 계약내용 저장
                     }
@@ -319,9 +293,6 @@ public class RequestList_sub extends LinearLayout {
         Map<String, Object> childUpdates = new HashMap<>();
         Map<String, Object> postValues = null;
 
-        HostRequestPost post = new HostRequestPost();
-        postValues = post.toMap();
-
         childUpdates.put("/hostreq/" + index, postValues);
         mPostReference.updateChildren(childUpdates);
     }
@@ -334,15 +305,16 @@ public class RequestList_sub extends LinearLayout {
         HostPost post = new HostPost(user_id, user_name, door_id);
         postValues = post.toMap();
 
-        getHostReqRow(childUpdates, postValues);
+        getHostRow(childUpdates, postValues);
     }
 
-    public void getHostReqRow(Map<String, Object> childUpdates, Map<String, Object> postValues){
+
+    public void getHostRow(Map<String, Object> childUpdates, Map<String, Object> postValues){
         ValueEventListener postListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                long host_req_row = dataSnapshot.getChildrenCount();
-                childUpdates.put("/host/" + String.valueOf(host_req_row+1), postValues);
+                long host_row = dataSnapshot.getChildrenCount();
+                childUpdates.put("/host/" + String.valueOf(host_row+1), postValues);
                 mPostReference.updateChildren(childUpdates);
             }
 
@@ -351,7 +323,7 @@ public class RequestList_sub extends LinearLayout {
                 Log.w("gomKim","loadPost:onCancelled", databaseError.toException());
             }
         };
-        Query sortbyAge = FirebaseDatabase.getInstance().getReference().child("hostreq");
+        Query sortbyAge = FirebaseDatabase.getInstance().getReference().child("host");
         sortbyAge.addListenerForSingleValueEvent(postListener);
     }
 }

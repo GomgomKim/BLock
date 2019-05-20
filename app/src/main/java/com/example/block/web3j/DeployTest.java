@@ -1,11 +1,22 @@
 package com.example.block.web3j;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Environment;
 import android.util.Log;
 
 import com.example.block.adapter.KeyStoreUtils;
+import com.example.block.database.DoorPost;
+import com.example.block.database.HostPost;
+import com.example.block.service.TransactionService;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
+import org.json.JSONObject;
 import org.web3j.abi.datatypes.Utf8String;
 import org.web3j.crypto.CipherException;
 import org.web3j.crypto.Credentials;
@@ -16,7 +27,6 @@ import org.web3j.protocol.Web3j;
 import org.web3j.protocol.admin.Admin;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.response.EthGetBalance;
-import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.core.methods.response.Web3ClientVersion;
 import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.protocol.http.HttpService;
@@ -26,10 +36,15 @@ import org.web3j.utils.Numeric;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.math.BigInteger;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-public class ContactBlockchain{
+public class DeployTest {
 
     private String URL = "https://ropsten.infura.io/v3/73b49c62a5c34d50b9ba5e4c4c2b2ceb";
     private String ADDRESS = "0xd9c1c60ba106fca0a920056545dfe47a5b465a04";
@@ -41,10 +56,44 @@ public class ContactBlockchain{
     BigInteger GAS_PRICE = BigInteger.valueOf(10000);
     BigInteger GAS_LIMIT = BigInteger.valueOf(3000000);
     BigInteger INITIALWEIVALUE = BigInteger.valueOf(0);
-    Utf8String DEPLOYSTRING = new Utf8String("sol");
+    Utf8String DEPLOYSTRING = new Utf8String("sol test");
     Greeter greeter;
 
-    public ContactBlockchain(Context context) throws ExecutionException, InterruptedException, IOException, TransactionException {
+    private DatabaseReference mPostReference;
+
+    private static final String FCM_MESSAGE_URL = "https://fcm.googleapis.com/fcm/send";
+    private static final String SERVER_KEY = "AAAAmgpQZrg:APA91bHs4Bw8PHI_RXxWpxQGFidTm5QJ0Cy8o8dO0GUS5Ua48Oq6Jc0J1dyuLsMBmODmV0zYyL0IMs1diPbSO2tt0qtnF1C1ybLsWRFvhQztO2lqgmVkyTP0yrlcnOuq2ogq-ZqT-QQg";
+    private void sendPostToFCM(final String to_fcm, final String message) {
+        new Thread(() -> {
+            try {
+                // FMC 메시지 생성 start
+                JSONObject root = new JSONObject();
+                JSONObject notification = new JSONObject();
+                notification.put("body", message);
+                notification.put("title","Block");
+                root.put("notification", notification);
+                root.put("to", to_fcm);
+                // FMC 메시지 생성 end
+
+                java.net.URL Url = new URL(FCM_MESSAGE_URL);
+                HttpURLConnection conn = (HttpURLConnection) Url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setDoOutput(true);
+                conn.setDoInput(true);
+                conn.addRequestProperty("Authorization", "key=" + SERVER_KEY);
+                conn.setRequestProperty("Accept", "application/json");
+                conn.setRequestProperty("Content-type", "application/json");
+                OutputStream os = conn.getOutputStream();
+                os.write(root.toString().getBytes("utf-8"));
+                os.flush();
+                conn.getResponseCode();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    public DeployTest(Context context, String door_id, String user_token, String user_id, String user_name) throws ExecutionException, InterruptedException{
 
         this.context = context;
 
@@ -96,27 +145,14 @@ public class ContactBlockchain{
         Log.i("gomgomKim", "Greeter loaded : "+greeter);
 
         Thread chain_thread = new Thread(() -> {
-            /*try {
+            try {
                 greeter = Greeter.deploy(web3j, credentials, contractGasProvider, INITIALWEIVALUE, DEPLOYSTRING);
+                Log.i("gomgomKim", "depoly : "+greeter);
+                Log.i("gomgomKim", "depoly : "+greeter.getContractAddress());
                 Log.i("gomgomKim", "Greeter deployed");
             }  catch (TransactionException e) {
                 e.printStackTrace();
                 Log.i("gomgomKim", "deploy error");
-            }*/
-
-            try {
-
-                ////////
-                TransactionReceipt transactionReceipt = greeter.set(DEPLOYSTRING);
-                ////////
-
-                Log.i("gomgomKim", "set : "+transactionReceipt);
-            } catch (IOException e) {
-                e.printStackTrace();
-                Log.i("gomgomKim", "io 오류");
-            } catch (TransactionException e) {
-                e.printStackTrace();
-                Log.i("gomgomKim", "트랜젝션 오류");
             }
 
             // 잔액확인
@@ -133,19 +169,53 @@ public class ContactBlockchain{
 
             Log.i("gomgomKim", "얼마있나요? : "+result2);
 
-//            new Uint256(BigInteger.valueOf(123));
-            try {
-                String result = String.valueOf(greeter.get());
-                Log.i("gomgomKim", "get : "+result);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            // DB insert
+            String deploy_address = greeter.getContractAddress();
+            postDoorFirebase(door_id, deploy_address);
+            sendPostToFCM(user_token,"deploy is successed!");
+            postHome(user_id, user_name, door_id);
+
+            Intent intent = new Intent(context, TransactionService.class);
+            intent.putExtra("type", "host");
+            intent.putExtra("user_id", user_id);
+            intent.putExtra("address", deploy_address);
+            intent.putExtra("state", "set");
+            context.startService(intent);
 
         });
 
         chain_thread.start();
 
 
+    }
+
+    public void postDoorFirebase(String door_id, String deploy_address){
+        mPostReference = FirebaseDatabase.getInstance().getReference();
+        Map<String, Object> childUpdates = new HashMap<>();
+        Map<String, Object> postValues = null;
+
+        DoorPost post = new DoorPost(door_id, deploy_address);
+        postValues = post.toMap();
+
+        getDoorRow(childUpdates, postValues);
+    }
+
+    public void getDoorRow(Map<String, Object> childUpdates, Map<String, Object> postValues){
+        ValueEventListener postListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                long door_row = dataSnapshot.getChildrenCount();
+                childUpdates.put("/door/" + String.valueOf(door_row+1), postValues);
+                mPostReference.updateChildren(childUpdates);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w("gomKim","loadPost:onCancelled", databaseError.toException());
+            }
+        };
+        Query sortbyAge = FirebaseDatabase.getInstance().getReference().child("door");
+        sortbyAge.addListenerForSingleValueEvent(postListener);
     }
 
 
@@ -171,6 +241,36 @@ public class ContactBlockchain{
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void postHome(String user_id, String user_name, String door_id){
+        mPostReference = FirebaseDatabase.getInstance().getReference();
+        Map<String, Object> childUpdates = new HashMap<>();
+        Map<String, Object> postValues = null;
+
+        HostPost post = new HostPost(user_id, user_name, door_id);
+        postValues = post.toMap();
+
+        getHostRow(childUpdates, postValues);
+    }
+
+
+    public void getHostRow(Map<String, Object> childUpdates, Map<String, Object> postValues){
+        ValueEventListener postListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                long host_row = dataSnapshot.getChildrenCount();
+                childUpdates.put("/host/" + String.valueOf(host_row+1), postValues);
+                mPostReference.updateChildren(childUpdates);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w("gomKim","loadPost:onCancelled", databaseError.toException());
+            }
+        };
+        Query sortbyAge = FirebaseDatabase.getInstance().getReference().child("host");
+        sortbyAge.addListenerForSingleValueEvent(postListener);
     }
 
 

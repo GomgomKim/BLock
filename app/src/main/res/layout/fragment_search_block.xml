@@ -57,10 +57,11 @@
             android:textColor="#aec865"
             />
         <TextView
+            android:id="@+id/user_phone"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
-            android:text="01099296975"
+            android:text=""
             android:fontFamily="@font/bodoniflf_bold"
             android:textSize="17dp"
             android:textColor="#aec865"
@@ -96,9 +97,10 @@
                 android:orientation="vertical"
                 >
                 <TextView
+                    android:id="@+id/user_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="김기연"
+                    android:text=""
                     android:fontFamily="@font/bodoniflf_bold"
                     android:textSize="17dp"
                     android:textColor="#aec865"
@@ -110,7 +112,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/join_day"
+        android:id="@+id/home_door"
         android:layout_below="@+id/nickname"
         android:layout_width="match_parent"
         android:layout_height="40dp"
@@ -140,8 +142,30 @@
 
 
     <RelativeLayout
+        android:id="@+id/add_door_btn"
+        android:layout_below="@+id/home_door"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="20dp"
+        android:background="#aec865"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Add door"
+            android:textColor="#ffffff"
+            android:includeFontPadding="false"
+            android:fontFamily="@font/bodoniflf_bold"
+            android:textSize="17dp"
+            />
+    </RelativeLayout>
+
+    <RelativeLayout
         android:id="@+id/logout_btn"
-        android:layout_below="@+id/join_day"
+        android:layout_below="@+id/add_door_btn"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginTop="20dp"

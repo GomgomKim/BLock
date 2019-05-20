@@ -66,15 +66,21 @@ public class MyBlockFragment extends Fragment {
     }
 
     public void createLayout(String door_id){ // host
-        DoorList_sub doorList_sub = new DoorList_sub(getActivity());
-        doorList_sub.setHost(door_id);
-        door_grid.addView(doorList_sub);
+        if(getContext() != null){
+            DoorList_sub doorList_sub = new DoorList_sub(getContext());
+            doorList_sub.setHost(door_id);
+            door_grid.addView(doorList_sub);
+        }
+
     }
 
     public void createLayout(String door_id, String start_time, String end_time){ // guest
-        DoorList_sub doorList_sub = new DoorList_sub(getActivity());
-        doorList_sub.setGuest(door_id, start_time, end_time);
-        door_grid.addView(doorList_sub);
+        if(getContext() != null){
+            DoorList_sub doorList_sub = new DoorList_sub(getContext());
+            doorList_sub.setGuest(door_id, start_time, end_time);
+            door_grid.addView(doorList_sub);
+        }
+
     }
 
 
