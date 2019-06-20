@@ -41,10 +41,10 @@ public class SetGuest {
     BigInteger GAS_LIMIT = BigInteger.valueOf(3000000);
     BigInteger INITIALWEIVALUE = BigInteger.valueOf(0);
     Utf8String DEPLOYSTRING = new Utf8String("gomgom test");
-    Utf8String USERID, STARTTIME, ENDTIME;
+    Utf8String USERID, STARTTIME, ENDTIME, CURTIME, SENDER;
     Greeter greeter;
 
-    public SetGuest(Context context, String user_id, String start_time, String end_time, String address) throws ExecutionException, InterruptedException {
+    public SetGuest(Context context, String user_id, String start_time, String end_time, String address, String cur_time, String sender) throws ExecutionException, InterruptedException {
 
         this.context = context;
 
@@ -52,6 +52,8 @@ public class SetGuest {
         STARTTIME = new Utf8String(start_time);
         ENDTIME = new Utf8String(end_time);
         ADDRESS= address;
+        CURTIME = new Utf8String(cur_time);
+        SENDER = new Utf8String(sender);
 
         Web3j web3j = Web3j.build(new HttpService(URL));
 
@@ -103,7 +105,7 @@ public class SetGuest {
             try {
 
                 ////////
-                TransactionReceipt transactionReceipt = greeter.setGuest(USERID, STARTTIME, ENDTIME);
+                TransactionReceipt transactionReceipt = greeter.setGuest(USERID, STARTTIME, ENDTIME, CURTIME, SENDER);
                 ////////
 
                 Log.i("gomgomKim", "guest : "+transactionReceipt);
@@ -159,28 +161,5 @@ public class SetGuest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-
-    public void  private_connect(){
-         /*// 계좌정보 불러오기
-        EthAccounts ethAccounts = web3j.ethAccounts().sendAsync().get(); // 등록계좌정보
-        String accounts[] = ethAccounts.getAccounts().toArray(new String[0]);*/
-
-        // 첫번째 계좌 락 해제 id, pwr
-     /*   if(accounts.length > 1){
-            PersonalUnlockAccount personalUnlockAccount
-                    = admin.personalUnlockAccount(accounts[0], "rlarl123").sendAsync().get();
-            // 기연 같은 경우엔 accounts[0] == 0x2cad275fb41068a1cc0076a4cf9b69bd9c87070e
-
-            if (personalUnlockAccount.accountUnlocked()) {
-                // send a transaction
-                Log.i("gomgomKim", "unlock account clear");
-            } else{
-                Log.i("gomgomKim", "unlock account defeat");
-            }
-        } else{
-            Log.i("gomgomKim", "no account ! ");
-        }*/
     }
 }

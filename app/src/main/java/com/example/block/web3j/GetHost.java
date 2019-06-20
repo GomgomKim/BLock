@@ -1,10 +1,23 @@
 package com.example.block.web3j;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.block.adapter.KeyStoreUtils;
+import com.example.block.database.MemberPost;
+import com.example.block.main.MainActivity;
+import com.example.block.service.TransactionService;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import org.web3j.crypto.CipherException;
 import org.web3j.crypto.Credentials;
@@ -20,6 +33,10 @@ import org.web3j.utils.Numeric;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.StringTokenizer;
 import java.util.concurrent.ExecutionException;
 
 public class GetHost {
@@ -34,10 +51,13 @@ public class GetHost {
     BigInteger GAS_PRICE = BigInteger.valueOf(10000);
     BigInteger GAS_LIMIT = BigInteger.valueOf(3000000);
     Greeter greeter;
+    String user_id, address;
 
-    public GetHost(Context context, String address) throws ExecutionException, InterruptedException{
+    public GetHost(Context context, String address, String user_id, String tool) throws ExecutionException, InterruptedException{
 
         this.context = context;
+        this.user_id = user_id;
+        this.address = address;
 
         ADDRESS = address;
 
@@ -91,6 +111,42 @@ public class GetHost {
             try {
                 String result = String.valueOf(greeter.getHost());
                 Log.i("gomgomKim", "get host : "+result);
+
+                // u_id 분류
+                StringTokenizer st = new StringTokenizer(result, ",");
+                ArrayList<String> u_id_arr = new ArrayList<>();
+                while(st.hasMoreElements()){
+                    u_id_arr.add(st.nextToken());
+                }
+
+                boolean is_host = false;
+                int count = 0;
+
+                for(int i=0; i<u_id_arr.size(); i++){
+                    Log.i("gomgomKim", "get host : "+u_id_arr.get(i));
+                    if(user_id.equals(u_id_arr.get(i))){
+                        is_host = true;
+                        count++;
+                    }
+                }
+                if(count%2 == 0){
+                    is_host = false;
+                }
+
+                if(is_host){ // host 유저라면
+                    switch (tool){
+                        case "open":
+                            openDoor();
+                            break;
+                        case "invite":
+                            sendInvitation();
+                            break;
+                    }
+                }
+                else { // 아니라면
+                    notOpenDoor();
+                }
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -127,26 +183,70 @@ public class GetHost {
         }
     }
 
+    public void openDoor(){
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.post(() -> Toast.makeText(context, "open Door !", Toast.LENGTH_SHORT).show());
+        handler.post(() -> MainActivity.sendData("1"));
+        handler.post(() -> findSender());
+    }
 
-    public void  private_connect(){
-         /*// 계좌정보 불러오기
-        EthAccounts ethAccounts = web3j.ethAccounts().sendAsync().get(); // 등록계좌정보
-        String accounts[] = ethAccounts.getAccounts().toArray(new String[0]);*/
+    public void notOpenDoor(){
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.post(() -> Toast.makeText(context, "You don't have auth !", Toast.LENGTH_SHORT).show());
+    }
 
-        // 첫번째 계좌 락 해제 id, pwr
-     /*   if(accounts.length > 1){
-            PersonalUnlockAccount personalUnlockAccount
-                    = admin.personalUnlockAccount(accounts[0], "rlarl123").sendAsync().get();
-            // 기연 같은 경우엔 accounts[0] == 0x2cad275fb41068a1cc0076a4cf9b69bd9c87070e
+    public void sendInvitation(){
+        
+    }
 
-            if (personalUnlockAccount.accountUnlocked()) {
-                // send a transaction
-                Log.i("gomgomKim", "unlock account clear");
-            } else{
-                Log.i("gomgomKim", "unlock account defeat");
+    public String getNow(){
+        long now = System.currentTimeMillis();
+        Date date = new Date(now);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        String getTime = sdf.format(date);
+        return getTime;
+    }
+
+    public void findSender(){
+        ValueEventListener postListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                String sender_name="";
+                String sender_phone="";
+
+                Log.e("gomKim", "row: " + dataSnapshot.getChildrenCount());
+                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                    String key = postSnapshot.getKey();
+                    MemberPost get = postSnapshot.getValue(MemberPost.class);
+                    String[] info = {get.user_id, get.user_name};
+
+                    if(user_id.equals(info[0])){
+                        sender_name = info[1];
+                        sender_phone = key;
+                        String sender = sender_name+"("+sender_phone+")";
+                        Intent intent = new Intent(context, TransactionService.class);
+                        intent.putExtra("sender", sender);
+                        intent.putExtra("address", address);
+                        intent.putExtra("type", "host");
+                        intent.putExtra("cur_time", getNow());
+                        intent.putExtra("state", "setHistory");
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            context.startForegroundService(intent);
+                        } else{
+                            context.startService(intent);
+                        }
+                    }
+
+                }
             }
-        } else{
-            Log.i("gomgomKim", "no account ! ");
-        }*/
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w("gomKim","loadPost:onCancelled", databaseError.toException());
+            }
+        };
+        Query sortbyAge = FirebaseDatabase.getInstance().getReference().child("member");
+        sortbyAge.addListenerForSingleValueEvent(postListener);
     }
 }

@@ -19,6 +19,7 @@ import com.ToxicBakery.viewpager.transforms.CubeOutTransformer;
 import com.example.block.R;
 import com.example.block.adapter.BackPressCloseHandler;
 import com.example.block.adapter.ViewPagerAdapter;
+import com.example.block.bluetooth.Bluetooth;
 import com.example.block.interfaces.MainInterface;
 
 import java.util.ArrayList;
@@ -32,6 +33,8 @@ public class MainActivity extends AppCompatActivity implements MainInterface {
     NavigationTabBar navigationTabBar;
     ArrayList<NavigationTabBar.Model> models;
 
+    static Bluetooth bluetooth;
+
     private BackPressCloseHandler backPressCloseHandler;
 
     @Override
@@ -42,7 +45,10 @@ public class MainActivity extends AppCompatActivity implements MainInterface {
         onNewIntent(getIntent());
         checkPermission();
         setIsNetwork();
+        setBluetooth();
     }
+
+
 
     @Override
     public void onBackPressed() {
@@ -55,6 +61,15 @@ public class MainActivity extends AppCompatActivity implements MainInterface {
     protected void onResume() {
         super.onResume();
         viewPagerAdapter.notifyDataSetChanged();
+    }
+
+    public void setBluetooth(){
+        bluetooth = new Bluetooth(this);
+        bluetooth.checkBluetooth();
+    }
+
+    public static void sendData(String param){
+        bluetooth.sendData(param);
     }
 
     //noti 누르면 바로 accept화면으로
@@ -180,4 +195,6 @@ public class MainActivity extends AppCompatActivity implements MainInterface {
     static void setCurrentViewpager(int index){
         viewPager.setCurrentItem(index);
     }
+
+
 }

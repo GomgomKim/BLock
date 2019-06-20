@@ -2,12 +2,14 @@ package com.example.block.web3j;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
 
 import com.example.block.adapter.KeyStoreUtils;
 import com.example.block.database.DoorPost;
 import com.example.block.database.HostPost;
+import com.example.block.database.MemberPost;
 import com.example.block.service.TransactionService;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -40,6 +42,8 @@ import java.io.OutputStream;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -175,13 +179,7 @@ public class DeployTest {
             sendPostToFCM(user_token,"deploy is successed!");
             postHome(user_id, user_name, door_id);
 
-            Intent intent = new Intent(context, TransactionService.class);
-            intent.putExtra("type", "host");
-            intent.putExtra("user_id", user_id);
-            intent.putExtra("address", deploy_address);
-            intent.putExtra("state", "set");
-            context.startService(intent);
-
+            getMemberInfo(user_id, deploy_address);
         });
 
         chain_thread.start();
@@ -273,26 +271,56 @@ public class DeployTest {
         sortbyAge.addListenerForSingleValueEvent(postListener);
     }
 
+    public void getMemberInfo(String u_id, String address){
+        ValueEventListener postListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.e("gomKim", "row: " + dataSnapshot.getChildrenCount());
+                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                    String key = postSnapshot.getKey();
+                    MemberPost get = postSnapshot.getValue(MemberPost.class);
+                    String[] info = {get.user_id, get.user_name};
 
-    public void  private_connect(){
-         /*// 계좌정보 불러오기
-        EthAccounts ethAccounts = web3j.ethAccounts().sendAsync().get(); // 등록계좌정보
-        String accounts[] = ethAccounts.getAccounts().toArray(new String[0]);*/
+                    if(u_id.equals(info[0])){
+                        String sender = info[1]+"("+key+")";
+                        String cur_time = getNow();
 
-        // 첫번째 계좌 락 해제 id, pwr
-     /*   if(accounts.length > 1){
-            PersonalUnlockAccount personalUnlockAccount
-                    = admin.personalUnlockAccount(accounts[0], "rlarl123").sendAsync().get();
-            // 기연 같은 경우엔 accounts[0] == 0x2cad275fb41068a1cc0076a4cf9b69bd9c87070e
+                        Intent intent = new Intent(context, TransactionService.class);
+                        intent.putExtra("type", "host");
+                        intent.putExtra("sender", sender);
+                        intent.putExtra("user_id", u_id);
+                        intent.putExtra("cur_time", cur_time);
+                        intent.putExtra("address", address);
+                        intent.putExtra("state", "set");
 
-            if (personalUnlockAccount.accountUnlocked()) {
-                // send a transaction
-                Log.i("gomgomKim", "unlock account clear");
-            } else{
-                Log.i("gomgomKim", "unlock account defeat");
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            context.startForegroundService(intent);
+                        } else{
+                            context.startService(intent);
+                        }
+
+                    }
+
+                }
             }
-        } else{
-            Log.i("gomgomKim", "no account ! ");
-        }*/
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w("gomKim","loadPost:onCancelled", databaseError.toException());
+            }
+        };
+        Query sortbyAge = FirebaseDatabase.getInstance().getReference().child("member");
+        sortbyAge.addListenerForSingleValueEvent(postListener);
     }
+
+    public String getNow(){
+        long now = System.currentTimeMillis();
+        Date date = new Date(now);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        String getTime = sdf.format(date);
+        return getTime;
+    }
+
+
+
 }

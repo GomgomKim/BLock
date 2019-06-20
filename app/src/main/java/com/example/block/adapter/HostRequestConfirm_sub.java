@@ -54,7 +54,7 @@ public class HostRequestConfirm_sub extends LinearLayout {
 
     public void setHostConfirm(String sender_name, String sender_phone, String door_id, String receiver_token){
         type_text.setText("[Type]\nhost");
-        sender_text.setText("[Sender]\n"+sender_name+"("+sender_phone+")");
+        sender_text.setText("[Sender]\n"+sender_name+"\n("+sender_phone+")");
         this.sender_name = sender_name;
         this.sender_phone = sender_phone;
         this.door_id = door_id;
@@ -73,7 +73,7 @@ public class HostRequestConfirm_sub extends LinearLayout {
 
         type.setText("[Type]\nHost Invitation");
         door.setText("[Door]\n"+door_id);
-        sender.setText("[Sender]\n"+sender_name+"("+sender_phone+")");
+        sender.setText("[Sender]\n"+sender_name+"\n("+sender_phone+")");
 
         confirm_btn.setOnClickListener(v -> {
             getHostReqData();

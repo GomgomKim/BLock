@@ -3,6 +3,7 @@ package com.example.block.tab;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -182,7 +183,11 @@ public class SearchBlockFragment extends Fragment {
                         intent.putExtra("user_id", info[0]);
                         intent.putExtra("user_name", info[2]);
                         intent.putExtra("state", "deploy");
-                        getActivity().startService(intent);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            getActivity().startForegroundService(intent);
+                        } else{
+                            getActivity().startService(intent);
+                        }
                     }
                 }
             }

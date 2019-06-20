@@ -3,6 +3,8 @@ package com.example.block.adapter;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Window;
@@ -13,9 +15,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.block.R;
+import com.example.block.database.DoorPost;
 import com.example.block.database.HostPost;
 import com.example.block.database.HostRequestPost;
 import com.example.block.database.MemberPost;
+import com.example.block.service.TransactionService;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,6 +33,8 @@ import org.json.JSONObject;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -76,12 +82,15 @@ public class HostRequest_sub extends LinearLayout {
 
     LinearLayout layout;
 
+    Context context;
+
     private DatabaseReference mPostReference;
 
     private String sender_name, sender_phone, receiver_name, receiver_phone, door_id, receiver_token;
 
     public HostRequest_sub(Context context) {
         super(context);
+        this.context = context;
         initSetting(context);
     }
 
@@ -96,7 +105,7 @@ public class HostRequest_sub extends LinearLayout {
 
     public void setHost(String sender_name, String sender_phone, String receiver_name, String receiver_phone, String door_id, String receiver_token){
         type_text.setText("[Type]\nhost");
-        sender_text.setText("[Sender]\n"+sender_name+"("+sender_phone+")");
+        sender_text.setText("[Sender]\n"+sender_name+"\n("+sender_phone+")");
         this.sender_name = sender_name;
         this.sender_phone = sender_phone;
         this.receiver_name = receiver_name;
@@ -120,8 +129,8 @@ public class HostRequest_sub extends LinearLayout {
 
         type.setText("[Type]\nHost invitation");
         door.setText("[Door]\n"+door_id);
-        sender.setText("[Sender]\n"+sender_name+"("+sender_phone+")");
-        receiver.setText("[Receiver]\n"+receiver_name+"("+receiver_phone+")");
+        sender.setText("[Sender]\n"+sender_name+"\n("+sender_phone+")");
+        receiver.setText("[Receiver]\n"+receiver_name+"\n("+receiver_phone+")");
         accept_btn.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             builder.setTitle("Host invitation accept");
@@ -263,6 +272,8 @@ public class HostRequest_sub extends LinearLayout {
                     if(receiver_token.equals(info[0])) {
                         sendPostToFCM( info[0],sender_name+"("+sender_phone+")의 host초대!");
                         postHome(info[1], info[2], door_id); // host 테이블에 계약내용 저장
+                        String sender = sender_name+"("+sender_phone+")";
+                        findDoorAddress(sender, info[1]);
                     }
                 }
             }
@@ -325,5 +336,52 @@ public class HostRequest_sub extends LinearLayout {
         };
         Query sortbyAge = FirebaseDatabase.getInstance().getReference().child("host");
         sortbyAge.addListenerForSingleValueEvent(postListener);
+    }
+
+    public void findDoorAddress(String sender, String user_id){
+        ValueEventListener postListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.e("gomKim", "row: " + dataSnapshot.getChildrenCount());
+                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                    String key = postSnapshot.getKey();
+                    DoorPost get = postSnapshot.getValue(DoorPost.class);
+                    String[] info = {get.door_id, get.deploy_address};
+
+                    if(door_id.equals(info[0])){
+                        // setHost web3j
+                        String cur_time = getNow();
+
+                        Intent intent = new Intent(getContext(), TransactionService.class);
+                        intent.putExtra("sender", sender);
+                        intent.putExtra("user_id", user_id);
+                        intent.putExtra("address", info[1]);
+                        intent.putExtra("cur_time", cur_time);
+                        intent.putExtra("type", "host");
+                        intent.putExtra("state", "set");
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            context.startForegroundService(intent);
+                        } else{
+                            context.startService(intent);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w("gomKim","loadPost:onCancelled", databaseError.toException());
+            }
+        };
+        Query sortbyAge = FirebaseDatabase.getInstance().getReference().child("door");
+        sortbyAge.addListenerForSingleValueEvent(postListener);
+    }
+
+    public String getNow(){
+        long now = System.currentTimeMillis();
+        Date date = new Date(now);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        String getTime = sdf.format(date);
+        return getTime;
     }
 }

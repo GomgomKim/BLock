@@ -2,36 +2,36 @@ package com.example.block.web3j;
 
 import android.content.Context;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
+import com.example.block.adapter.DoorList_sub;
 import com.example.block.adapter.KeyStoreUtils;
+import com.example.block.service.BusProvider;
 
-import org.web3j.abi.datatypes.Utf8String;
 import org.web3j.crypto.CipherException;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.Keys;
 import org.web3j.crypto.WalletUtils;
 import org.web3j.protocol.Web3j;
-import org.web3j.protocol.core.DefaultBlockParameterName;
-import org.web3j.protocol.core.methods.response.EthGetBalance;
-import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.core.methods.response.Web3ClientVersion;
-import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.tx.gas.ContractGasProvider;
-import org.web3j.utils.Convert;
 import org.web3j.utils.Numeric;
 
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.StringTokenizer;
 import java.util.concurrent.ExecutionException;
 
-public class SetTest {
+public class GetOpenHistory {
 
     private String URL = "https://ropsten.infura.io/v3/73b49c62a5c34d50b9ba5e4c4c2b2ceb";
-    private String ADDRESS = "0xd9c1c60ba106fca0a920056545dfe47a5b465a04";
+    private String ADDRESS;
     private String WALLET = "UTC--2019-04-10T20-43-14.985--8c2ae0866c19bd02e2f4ba20050f9600d9dd3dfd.json";
     final String PASSWORD = "@qlqjs2019";
     Context context;
@@ -39,15 +39,17 @@ public class SetTest {
     Credentials credentials;
     BigInteger GAS_PRICE = BigInteger.valueOf(10000);
     BigInteger GAS_LIMIT = BigInteger.valueOf(3000000);
-    BigInteger INITIALWEIVALUE = BigInteger.valueOf(0);
-    Utf8String DEPLOYSTRING = new Utf8String("gomgom test");
     Greeter greeter;
 
-    public SetTest(Context context) throws ExecutionException, InterruptedException {
+    public GetOpenHistory(Context context, String address) throws ExecutionException, InterruptedException{
 
         this.context = context;
 
+        ADDRESS = address;
+
         Web3j web3j = Web3j.build(new HttpService(URL));
+
+        BusProvider.getInstance().register(context);
 
         Web3ClientVersion web3ClientVersion = web3j.web3ClientVersion().sendAsync().get();;
         String clientVersion = web3ClientVersion.getWeb3ClientVersion();
@@ -95,39 +97,53 @@ public class SetTest {
 
         Thread chain_thread = new Thread(() -> {
             try {
+                String result = String.valueOf(greeter.getOpenHistory());
+                Log.i("gomgomKim", "get open history : "+result);
 
-                ////////
-                TransactionReceipt transactionReceipt = greeter.setHost(DEPLOYSTRING);
-                ////////
+                // u_id 분류
+                StringTokenizer st = new StringTokenizer(result, "/");
+                ArrayList<String> result_arr = new ArrayList<>();
+                while(st.hasMoreElements()){
+                    result_arr.add(st.nextToken());
+                }
 
-                Log.i("gomgomKim", "set : "+transactionReceipt);
+                String result_trim = "";
+                for(int i=0; i<result_arr.size(); i++){
+                    // u_id 분류
+                    StringTokenizer st_detail = new StringTokenizer(result_arr.get(i), ",");
+                    ArrayList<String> result_detail = new ArrayList<>();
+                    while(st_detail.hasMoreElements()){
+                        result_detail.add(st_detail.nextToken());
+                    }
+                    if(result_detail !=null){
+                        String name = result_detail.get(0);
+                        String type = result_detail.get(1);
+                        String date = result_detail.get(2);
+
+                        result_trim = result_trim+name+" - "+type+" - "+date+"\n";
+                    }
+                }
+
+                Log.i("gomgomKim", "get open history : "+result_trim);
+
+                sendResult(result_trim);
+
             } catch (IOException e) {
                 e.printStackTrace();
-                Log.i("gomgomKim", "io 오류");
-            } catch (TransactionException e) {
-                e.printStackTrace();
-                Log.i("gomgomKim", "트랜젝션 오류");
             }
-
-            // 잔액확인
-            EthGetBalance ethGetBalance = null;
-            try {
-                ethGetBalance = web3j.ethGetBalance("0x8c2ae0866c19bd02e2f4ba20050f9600d9dd3dfd", DefaultBlockParameterName.LATEST).sendAsync().get();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }
-            BigInteger wei = ethGetBalance.getBalance();
-            String result2 = Convert.fromWei(wei.toString() , Convert.Unit.ETHER).toString();
-
-            Log.i("gomgomKim", "얼마있나요? : "+result2);
 
         });
 
         chain_thread.start();
 
 
+    }
+
+    public void sendResult(String result){
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.post(() -> DoorList_sub.setTextHistory(result));
+//        DoorList_sub.setTextHistory(result);
+        Log.i("gomgomKim", "get open history event ");
     }
 
 
@@ -153,28 +169,5 @@ public class SetTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-
-    public void  private_connect(){
-         /*// 계좌정보 불러오기
-        EthAccounts ethAccounts = web3j.ethAccounts().sendAsync().get(); // 등록계좌정보
-        String accounts[] = ethAccounts.getAccounts().toArray(new String[0]);*/
-
-        // 첫번째 계좌 락 해제 id, pwr
-     /*   if(accounts.length > 1){
-            PersonalUnlockAccount personalUnlockAccount
-                    = admin.personalUnlockAccount(accounts[0], "rlarl123").sendAsync().get();
-            // 기연 같은 경우엔 accounts[0] == 0x2cad275fb41068a1cc0076a4cf9b69bd9c87070e
-
-            if (personalUnlockAccount.accountUnlocked()) {
-                // send a transaction
-                Log.i("gomgomKim", "unlock account clear");
-            } else{
-                Log.i("gomgomKim", "unlock account defeat");
-            }
-        } else{
-            Log.i("gomgomKim", "no account ! ");
-        }*/
     }
 }

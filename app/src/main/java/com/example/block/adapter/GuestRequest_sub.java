@@ -93,7 +93,7 @@ public class GuestRequest_sub extends LinearLayout {
 
     public void setGuest(String sender_name, String sender_phone, String start_time, String end_time, String door_id, String receiver_token){
         type_text.setText("[Type]\nguest");
-        sender_text.setText("[Sender]\n"+sender_name+"("+sender_phone+")");
+        sender_text.setText("[Sender]\n"+sender_name+"\n("+sender_phone+")");
         this.sender_name = sender_name;
         this.sender_phone = sender_phone;
         this.start_time = start_time;
@@ -117,7 +117,7 @@ public class GuestRequest_sub extends LinearLayout {
 
         type.setText("[Type]\nGuest invitation");
         door.setText("[Door]\n"+door_id);
-        sender.setText("[Sender]\n"+sender_name+"("+sender_phone+")");
+        sender.setText("[Sender]\n"+sender_name+"\n("+sender_phone+")");
         start_date_time.setText("[Start]\n"+start_time);
         end_date_time.setText("[End]\n"+end_time);
         confirm_btn.setOnClickListener(v -> {

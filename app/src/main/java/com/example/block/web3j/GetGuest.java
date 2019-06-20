@@ -1,10 +1,23 @@
 package com.example.block.web3j;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.block.adapter.KeyStoreUtils;
+import com.example.block.database.MemberPost;
+import com.example.block.main.MainActivity;
+import com.example.block.service.TransactionService;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import org.web3j.crypto.CipherException;
 import org.web3j.crypto.Credentials;
@@ -20,6 +33,10 @@ import org.web3j.utils.Numeric;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.StringTokenizer;
 import java.util.concurrent.ExecutionException;
 
 public class GetGuest {
@@ -34,10 +51,12 @@ public class GetGuest {
     BigInteger GAS_PRICE = BigInteger.valueOf(10000);
     BigInteger GAS_LIMIT = BigInteger.valueOf(3000000);
     Greeter greeter;
-
-    public GetGuest(Context context, String address) throws ExecutionException, InterruptedException{
+    String user_id, address;
+    public GetGuest(Context context, String address, String user_id, String cur_time) throws ExecutionException, InterruptedException{
 
         this.context = context;
+        this.user_id = user_id;
+        this.address = address;
 
         ADDRESS = address;
 
@@ -92,6 +111,51 @@ public class GetGuest {
             try {
                 String result = String.valueOf(greeter.getGuest());
                 Log.i("gomgomKim", "get guest : "+result);
+
+                // 사람 분류
+                StringTokenizer st = new StringTokenizer(result, "/");
+                ArrayList<String> u_id_arr = new ArrayList<>();
+                while(st.hasMoreElements()){
+                    u_id_arr.add(st.nextToken());
+                }
+
+                boolean is_guest = false;
+
+                for(int i=0; i<u_id_arr.size(); i++){
+                    StringTokenizer st2 = new StringTokenizer(u_id_arr.get(i), ",");
+                    ArrayList<String> guest_arr = new ArrayList<>();
+                    while(st2.hasMoreElements()){
+                        guest_arr.add(st2.nextToken());
+                    }
+                    String u_id = guest_arr.get(0);
+                    String start_auth = guest_arr.get(1);
+                    String end_auth = guest_arr.get(2);
+
+                    Log.i("gomgomKim", "user : "+u_id);
+                    Log.i("gomgomKim", "start_auth : "+start_auth);
+                    Log.i("gomgomKim", "end_auth : "+end_auth);
+
+                    long start_date_long = cropDateToLong(start_auth);
+                    long end_date_long = cropDateToLong(end_auth);
+                    long cur_time_long = cropDateToLong(cur_time);
+                    Log.i("gomgomKim", "start_long : "+start_date_long);
+                    Log.i("gomgomKim", "end_long : "+end_date_long);
+                    Log.i("gomgomKim", "now : "+cur_time_long);
+
+                    // u_id 일치하고 현재시간이 기간안쪽이라면
+                    if(user_id.equals(u_id) && cur_time_long > start_date_long && cur_time_long < end_date_long){
+                        is_guest = true;
+                    }
+                }
+
+                if(is_guest){
+                    openDoor();
+                }
+                else {
+                    notOpenDoor();
+                }
+
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -101,6 +165,18 @@ public class GetGuest {
         chain_thread.start();
 
 
+    }
+
+    public void openDoor(){
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.post(() -> Toast.makeText(context, "open Door !", Toast.LENGTH_SHORT).show());
+        handler.post(() -> MainActivity.sendData("1"));
+        handler.post(() -> findSender());
+    }
+
+    public void notOpenDoor(){
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.post(() -> Toast.makeText(context, "You don't have auth !", Toast.LENGTH_SHORT).show());
     }
 
 
@@ -128,26 +204,62 @@ public class GetGuest {
         }
     }
 
+    public long cropDateToLong(String date){
+        String crop1 = date.replaceAll("-", "");
+        String crop2 = crop1.replaceAll(" ", "");
+        String crop3 = crop2.replaceAll(":", "");
+        long long_date = Long.parseLong(crop3);
+        return long_date;
+    }
 
-    public void  private_connect(){
-         /*// 계좌정보 불러오기
-        EthAccounts ethAccounts = web3j.ethAccounts().sendAsync().get(); // 등록계좌정보
-        String accounts[] = ethAccounts.getAccounts().toArray(new String[0]);*/
+    public String getNow(){
+        long now = System.currentTimeMillis();
+        Date date = new Date(now);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        String getTime = sdf.format(date);
+        return getTime;
+    }
 
-        // 첫번째 계좌 락 해제 id, pwr
-     /*   if(accounts.length > 1){
-            PersonalUnlockAccount personalUnlockAccount
-                    = admin.personalUnlockAccount(accounts[0], "rlarl123").sendAsync().get();
-            // 기연 같은 경우엔 accounts[0] == 0x2cad275fb41068a1cc0076a4cf9b69bd9c87070e
+    public void findSender(){
+        ValueEventListener postListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
 
-            if (personalUnlockAccount.accountUnlocked()) {
-                // send a transaction
-                Log.i("gomgomKim", "unlock account clear");
-            } else{
-                Log.i("gomgomKim", "unlock account defeat");
+                String sender_name="";
+                String sender_phone="";
+
+                Log.e("gomKim", "row: " + dataSnapshot.getChildrenCount());
+                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                    String key = postSnapshot.getKey();
+                    MemberPost get = postSnapshot.getValue(MemberPost.class);
+                    String[] info = {get.user_id, get.user_name};
+
+                    if(user_id.equals(info[0])){
+                        sender_name = info[1];
+                        sender_phone = key;
+                        String sender = sender_name+"("+sender_phone+")";
+                        Intent intent = new Intent(context, TransactionService.class);
+                        intent.putExtra("sender", sender);
+                        intent.putExtra("address", address);
+                        intent.putExtra("type", "guest");
+                        intent.putExtra("cur_time", getNow());
+                        intent.putExtra("state", "setHistory");
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            context.startForegroundService(intent);
+                        } else{
+                            context.startService(intent);
+                        }
+                    }
+
+                }
             }
-        } else{
-            Log.i("gomgomKim", "no account ! ");
-        }*/
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w("gomKim","loadPost:onCancelled", databaseError.toException());
+            }
+        };
+        Query sortbyAge = FirebaseDatabase.getInstance().getReference().child("member");
+        sortbyAge.addListenerForSingleValueEvent(postListener);
     }
 }

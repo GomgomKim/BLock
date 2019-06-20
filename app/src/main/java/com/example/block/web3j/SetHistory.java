@@ -6,16 +6,21 @@ import android.util.Log;
 
 import com.example.block.adapter.KeyStoreUtils;
 
+import org.web3j.abi.datatypes.Utf8String;
 import org.web3j.crypto.CipherException;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.Keys;
 import org.web3j.crypto.WalletUtils;
 import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.DefaultBlockParameterName;
+import org.web3j.protocol.core.methods.response.EthGetBalance;
+import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.core.methods.response.Web3ClientVersion;
 import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.tx.gas.ContractGasProvider;
+import org.web3j.utils.Convert;
 import org.web3j.utils.Numeric;
 
 import java.io.File;
@@ -23,7 +28,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.concurrent.ExecutionException;
 
-public class GetTest {
+public class SetHistory {
 
     private String URL = "https://ropsten.infura.io/v3/73b49c62a5c34d50b9ba5e4c4c2b2ceb";
     private String ADDRESS = "0xd9c1c60ba106fca0a920056545dfe47a5b465a04";
@@ -34,11 +39,20 @@ public class GetTest {
     Credentials credentials;
     BigInteger GAS_PRICE = BigInteger.valueOf(10000);
     BigInteger GAS_LIMIT = BigInteger.valueOf(3000000);
+    BigInteger INITIALWEIVALUE = BigInteger.valueOf(0);
+    Utf8String DEPLOYSTRING = new Utf8String("gomgom test");
+    Utf8String USERID, TYPE, CURTIME;
     Greeter greeter;
 
-    public GetTest(Context context) throws ExecutionException, InterruptedException, IOException, TransactionException {
+    public SetHistory(Context context, String user_id, String type, String address, String cur_time) throws ExecutionException, InterruptedException {
 
         this.context = context;
+
+        USERID = new Utf8String(user_id);
+        TYPE = new Utf8String(type);
+        CURTIME = new Utf8String(cur_time);
+
+        ADDRESS = address;
 
         Web3j web3j = Web3j.build(new HttpService(URL));
 
@@ -87,13 +101,34 @@ public class GetTest {
         Log.i("gomgomKim", "Greeter loaded : "+greeter);
 
         Thread chain_thread = new Thread(() -> {
-//            new Uint256(BigInteger.valueOf(123));
             try {
-                String result = String.valueOf(greeter.getHost());
-                Log.i("gomgomKim", "get : "+result);
+
+                ////////
+                TransactionReceipt transactionReceipt = greeter.setOpenHistory(USERID, TYPE, CURTIME);
+                ////////
+
+                Log.i("gomgomKim", "set history : "+transactionReceipt);
             } catch (IOException e) {
                 e.printStackTrace();
+                Log.i("gomgomKim", "io 오류");
+            } catch (TransactionException e) {
+                e.printStackTrace();
+                Log.i("gomgomKim", "트랜젝션 오류");
             }
+
+            // 잔액확인
+            EthGetBalance ethGetBalance = null;
+            try {
+                ethGetBalance = web3j.ethGetBalance("0x8c2ae0866c19bd02e2f4ba20050f9600d9dd3dfd", DefaultBlockParameterName.LATEST).sendAsync().get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+            BigInteger wei = ethGetBalance.getBalance();
+            String result2 = Convert.fromWei(wei.toString() , Convert.Unit.ETHER).toString();
+
+            Log.i("gomgomKim", "얼마있나요? : "+result2);
 
         });
 
@@ -127,26 +162,4 @@ public class GetTest {
         }
     }
 
-
-    public void  private_connect(){
-         /*// 계좌정보 불러오기
-        EthAccounts ethAccounts = web3j.ethAccounts().sendAsync().get(); // 등록계좌정보
-        String accounts[] = ethAccounts.getAccounts().toArray(new String[0]);*/
-
-        // 첫번째 계좌 락 해제 id, pwr
-     /*   if(accounts.length > 1){
-            PersonalUnlockAccount personalUnlockAccount
-                    = admin.personalUnlockAccount(accounts[0], "rlarl123").sendAsync().get();
-            // 기연 같은 경우엔 accounts[0] == 0x2cad275fb41068a1cc0076a4cf9b69bd9c87070e
-
-            if (personalUnlockAccount.accountUnlocked()) {
-                // send a transaction
-                Log.i("gomgomKim", "unlock account clear");
-            } else{
-                Log.i("gomgomKim", "unlock account defeat");
-            }
-        } else{
-            Log.i("gomgomKim", "no account ! ");
-        }*/
-    }
 }
